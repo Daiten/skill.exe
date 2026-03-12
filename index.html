@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SKILL.EXE — Periodic Mastery Protocol</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0d0d;--bg2:#111411;--bg3:#0a0f0a;--panel:#0e130e;
+  --green:#00ff41;--green-dim:#00c832;--green-dark:#008f11;
+  --green-faint:rgba(0,255,65,0.07);--green-glow:rgba(0,255,65,0.35);
+  --border:rgba(0,255,65,0.18);--border-bright:rgba(0,255,65,0.5);
+  --text:#00ff41;--text-dim:#4a8f55;--text-muted:#2d5c35;
+  --red:#ff3333;--amber:#ffaa00;
+  --mono:'Share Tech Mono',monospace;--display:'Orbitron',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh;overflow-x:hidden;cursor:crosshair}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px);pointer-events:none;z-index:9999}
+#matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.04;z-index:0;pointer-events:none}
+.app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
+
+/* Header */
+.header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);gap:1rem;flex-wrap:wrap}
+.logo-title{font-family:var(--display);font-size:22px;font-weight:900;letter-spacing:4px;color:var(--green);text-shadow:0 0 20px var(--green-glow),0 0 40px rgba(0,255,65,0.15);animation:flicker 8s infinite}
+.logo-sub{font-size:10px;color:var(--text-dim);letter-spacing:3px;margin-top:3px}
+@keyframes flicker{0%,96%,100%{opacity:1}97%{opacity:0.55}98%{opacity:1}99%{opacity:0.7}}
+.header-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+/* Buttons */
+.btn{background:transparent;border:1px solid var(--border-bright);padding:6px 14px;font-family:var(--mono);font-size:11px;color:var(--green-dim);cursor:crosshair;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s;position:relative;overflow:hidden}
+.btn::before{content:'';position:absolute;inset:0;background:var(--green-faint);transform:translateX(-100%);transition:transform 0.2s}
+.btn:hover::before{transform:translateX(0)}
+.btn:hover{color:var(--green);border-color:var(--green);box-shadow:0 0 12px var(--green-glow)}
+.btn:active{transform:scale(0.97)}
+.btn.primary{border-color:var(--green);color:var(--green);box-shadow:0 0 8px rgba(0,255,65,0.2)}
+.btn.primary::before{background:rgba(0,255,65,0.1)}
+.btn.primary:hover{box-shadow:0 0 20px var(--green-glow)}
+.btn.danger{border-color:rgba(255,51,51,0.4);color:rgba(255,51,51,0.7)}
+.btn.danger::before{background:rgba(255,51,51,0.07)}
+.btn.danger:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 12px rgba(255,51,51,0.3)}
+.btn.timer-on{border-color:var(--amber);color:var(--amber);animation:pulse-amber 1.5s infinite}
+@keyframes pulse-amber{0%,100%{box-shadow:0 0 8px rgba(255,170,0,0.3)}50%{box-shadow:0 0 18px rgba(255,170,0,0.6)}}
+
+/* Stats */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
+.stat-cell{border:1px solid var(--border);padding:10px 14px;background:var(--panel);position:relative;overflow:hidden}
+.stat-cell::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green-dark),transparent)}
+.stat-label{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.stat-value{font-family:var(--display);font-size:18px;font-weight:700;color:var(--green);text-shadow:0 0 10px var(--green-glow)}
+
+/* Scale legend */
+.scale-bar{margin-bottom:1.5rem;display:flex;flex-direction:column;gap:5px}
+.scale-row{display:flex;gap:3px;flex-wrap:wrap}
+.scale-pip{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:6px;font-family:var(--display);font-weight:700;border:1px solid rgba(255,255,255,0.1);cursor:default;transition:transform 0.1s}
+.scale-pip:hover{transform:scale(1.4);z-index:10;position:relative}
+.scale-label{font-size:9px;color:var(--text-muted);letter-spacing:2px}
+
+/* Skill tree */
+.skill-tree{display:flex;flex-direction:column;gap:6px}
+.skill-node{border:1px solid var(--border);background:var(--panel);transition:border-color 0.2s;position:relative}
+.skill-node:hover{border-color:rgba(255,255,255,0.25)}
+.skill-node::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;transition:background 0.2s,box-shadow 0.2s}
+.skill-node.active-timer::before{animation:pulse-bar 1.5s infinite}
+@keyframes pulse-bar{0%,100%{opacity:1}50%{opacity:0.35}}
+
+.skill-header{display:flex;align-items:stretch;cursor:crosshair;user-select:none}
+
+/* ── Element card ── */
+.element-block{
+  flex-shrink:0;width:74px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-right:1px solid rgba(255,255,255,0.07);
+  padding:6px 4px 5px;gap:0;
+  transition:background 0.3s;
+}
+.el-number{font-family:var(--mono);font-size:9px;line-height:1;opacity:0.55;align-self:flex-start;padding-left:5px;width:100%;margin-bottom:1px}
+.el-symbol{font-family:var(--display);font-weight:900;font-size:26px;line-height:1;letter-spacing:-1px}
+.el-name{font-size:7px;letter-spacing:0.3px;text-transform:uppercase;text-align:center;line-height:1.3;margin-top:3px;white-space:nowrap;overflow:hidden;max-width:70px;text-overflow:ellipsis}
+
+/* Skill body */
+.skill-body{flex:1;min-width:0;display:flex;flex-direction:column;padding:8px 10px 0}
+.skill-top-row{display:flex;align-items:center;gap:8px}
+.skill-icon{width:24px;height:24px;flex-shrink:0;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;overflow:hidden;background:var(--bg3);color:var(--text-muted);font-family:var(--display)}
+.skill-icon img{width:100%;height:100%;object-fit:cover}
+.expand-arrow{font-size:9px;color:var(--text-muted);transition:transform 0.2s;flex-shrink:0;width:12px}
+.expand-arrow.open{transform:rotate(90deg);color:var(--text-dim)}
+.skill-name{font-family:var(--display);font-size:12px;font-weight:400;letter-spacing:1.5px;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.skill-meta-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-live{font-size:11px;color:var(--amber);letter-spacing:2px;text-shadow:0 0 8px rgba(255,170,0,0.5);min-width:56px;text-align:right}
+.time-label{font-size:11px;color:var(--text-dim)}
+
+.progress-wrap{padding:6px 0 8px}
+.progress-track{height:2px;background:rgba(255,255,255,0.06);position:relative}
+.progress-fill{height:100%;transition:width 0.5s ease;position:relative}
+.progress-fill::after{content:'';position:absolute;right:0;top:-1px;width:3px;height:4px;background:currentColor;box-shadow:0 0 5px currentColor}
+
+/* Actions */
+.skill-actions{display:none;padding:8px 12px 12px;border-top:1px solid var(--border);gap:6px;flex-wrap:wrap;align-items:center;background:var(--bg3)}
+.skill-actions.visible{display:flex}
+.time-inputs{display:flex;gap:4px;align-items:center}
+input[type=number],input[type=text]{background:var(--bg);border:1px solid var(--border);color:var(--green);font-family:var(--mono);font-size:12px;padding:5px 8px;outline:none;-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input:focus{border-color:var(--green-dim);box-shadow:0 0 8px rgba(0,255,65,0.15)}
+.input-label{font-size:10px;color:var(--text-muted);letter-spacing:1px}
+
+.children-container{margin-left:24px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:4px;padding-top:4px;margin-bottom:4px}
+
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--text-muted);border:1px dashed var(--border)}
+.empty-title{font-family:var(--display);font-size:14px;letter-spacing:3px;color:var(--text-dim);margin-bottom:8px}
+.empty-sub{font-size:11px;letter-spacing:1px}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:1000}
+.overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--green-dim);box-shadow:0 0 40px rgba(0,255,65,0.15);width:380px;max-width:95vw;max-height:90vh;overflow-y:auto;animation:modal-in 0.15s ease}
+@keyframes modal-in{from{transform:scale(0.95) translateY(-10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal-header{padding:14px 18px;border-bottom:1px solid var(--border);font-family:var(--display);font-size:13px;letter-spacing:3px;color:var(--green);text-shadow:0 0 10px var(--green-glow);display:flex;align-items:center;justify-content:space-between}
+.modal-close{background:none;border:none;color:var(--text-muted);cursor:crosshair;font-size:18px;line-height:1;padding:0 4px;transition:color 0.15s}
+.modal-close:hover{color:var(--red)}
+.modal-body{padding:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.field input[type=text],.field input[type=number]{width:100%}
+.field-row{display:flex;gap:8px}
+.field-row .field{flex:1}
+.icon-upload-area{border:1px dashed var(--border-bright);padding:16px;text-align:center;cursor:crosshair;transition:all 0.2s;background:var(--bg3)}
+.icon-upload-area:hover{border-color:var(--green);background:var(--green-faint)}
+.icon-preview{width:48px;height:48px;margin:0 auto 8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--bg);overflow:hidden;color:var(--text-muted)}
+.icon-preview img{width:100%;height:100%;object-fit:cover}
+.icon-hint{font-size:10px;color:var(--text-muted);letter-spacing:1px}
+.modal-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+.corner-tl,.corner-tr{position:fixed;top:12px;font-size:9px;color:var(--text-muted);letter-spacing:2px;z-index:2;pointer-events:none}
+.corner-tl{left:12px}.corner-tr{right:12px}
+input[type=file]{display:none}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--green-dark)}
+::-webkit-scrollbar-thumb:hover{background:var(--green-dim)}
+</style>
+</head>
+<body>
+<canvas id="matrix-bg"></canvas>
+<div class="corner-tl" id="clock-display">--:--:--</div>
+<div class="corner-tr">SKILL.EXE v3.2</div>
+
+<div class="app">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-title">SKILL.EXE</div>
+      <div class="logo-sub">periodic mastery protocol — hydrogen to uranium</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="exportData()">[ EXPORT ]</button>
+      <button class="btn" onclick="document.getElementById('import-file').click()">[ IMPORT ]</button>
+      <input type="file" id="import-file" accept=".json" onchange="importData(event)"/>
+      <button class="btn primary" onclick="openAddModal(null)">[ + NEW SKILL ]</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-cell"><div class="stat-label">Skills loaded</div><div class="stat-value" id="stat-count">0</div></div>
+    <div class="stat-cell"><div class="stat-label">Hours invested</div><div class="stat-value" id="stat-hours">0.0</div></div>
+    <div class="stat-cell"><div class="stat-label">Peak element</div><div class="stat-value" id="stat-level">—</div></div>
+    <div class="stat-cell"><div class="stat-label">To Uranium</div><div class="stat-value" id="stat-remain">∞</div></div>
+  </div>
+
+  <div class="scale-bar">
+    <div class="scale-label">ELEMENT SCALE</div>
+    <div class="scale-row" id="scale-row"></div>
+  </div>
+
+  <div class="skill-tree" id="skill-tree"></div>
+</div>
+
+<div class="overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="modal-title">INITIALIZE SKILL</span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Designation</label>
+        <input type="text" id="modal-name" placeholder="e.g. Python" autocomplete="off"/>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Hours logged</label><input type="number" id="modal-hours" placeholder="0" min="0"/></div>
+        <div class="field"><label>Minutes logged</label><input type="number" id="modal-mins" placeholder="0" min="0" max="59"/></div>
+      </div>
+      <div class="field">
+        <label>Icon (optional)</label>
+        <div class="icon-upload-area" onclick="document.getElementById('icon-file').click()">
+          <div class="icon-preview" id="icon-preview-box"><span>?</span></div>
+          <div class="icon-hint">CLICK TO UPLOAD IMAGE</div>
+          <input type="file" id="icon-file" accept="image/*" onchange="handleIconUpload(event)"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">[ ABORT ]</button>
+      <button class="btn primary" onclick="saveModal()">[ EXECUTE ]</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Matrix rain ── */
+(function(){
+  const c=document.getElementById('matrix-bg'),ctx=c.getContext('2d');
+  let cols,drops;
+  const chars='HHeLiBeBCNOFNeNaMgAlSiPSClArKCaFeCuAuAgUPbSnZnCr0123456789アイウエオカキ';
+  function resize(){c.width=innerWidth;c.height=innerHeight;cols=Math.floor(c.width/16);drops=Array(cols).fill(0).map(()=>Math.random()*-100)}
+  function draw(){ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font='12px Share Tech Mono';for(let i=0;i<cols;i++){ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*16,drops[i]*16);if(drops[i]*16>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}
+  resize();window.addEventListener('resize',resize);setInterval(draw,50);
+})();
+
+function updateClock(){const n=new Date();document.getElementById('clock-display').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':')}
+setInterval(updateClock,1000);updateClock();
+
+/* ══════════════════════════════════════════════════════
+   ALL 92 NATURAL ELEMENTS — CPK/Jmol-inspired colors
+   Each element has: sym, name, col (foreground), bg (card bg), glow
+   Colors tuned to be vivid and distinct on dark backgrounds.
+   ══════════════════════════════════════════════════════ */
+const ELEMENTS = [
+  null,
+  /* 1  H  */ {sym:'H', name:'Hydrogen',     col:'#e8e8e8', bg:'rgba(220,220,220,0.07)', glow:'rgba(220,220,220,0.3)'},
+  /* 2  He */ {sym:'He',name:'Helium',        col:'#00ffff', bg:'rgba(0,255,255,0.06)',   glow:'rgba(0,255,255,0.35)'},
+  /* 3  Li */ {sym:'Li',name:'Lithium',       col:'#cc66ff', bg:'rgba(180,80,255,0.07)',  glow:'rgba(180,80,255,0.3)'},
+  /* 4  Be */ {sym:'Be',name:'Beryllium',     col:'#44cc44', bg:'rgba(50,180,50,0.07)',   glow:'rgba(50,180,50,0.3)'},
+  /* 5  B  */ {sym:'B', name:'Boron',         col:'#e8a060', bg:'rgba(200,130,60,0.07)', glow:'rgba(200,130,60,0.3)'},
+  /* 6  C  */ {sym:'C', name:'Carbon',        col:'#aaaaaa', bg:'rgba(160,160,160,0.06)', glow:'rgba(160,160,160,0.25)'},
+  /* 7  N  */ {sym:'N', name:'Nitrogen',      col:'#4488ff', bg:'rgba(50,100,255,0.07)', glow:'rgba(50,100,255,0.35)'},
+  /* 8  O  */ {sym:'O', name:'Oxygen',        col:'#ff4444', bg:'rgba(255,50,50,0.07)',  glow:'rgba(255,50,50,0.35)'},
+  /* 9  F  */ {sym:'F', name:'Fluorine',      col:'#44dd44', bg:'rgba(50,210,50,0.07)',  glow:'rgba(50,210,50,0.35)'},
+  /* 10 Ne */ {sym:'Ne',name:'Neon',          col:'#ff6688', bg:'rgba(255,80,100,0.07)', glow:'rgba(255,80,100,0.4)'},
+  /* 11 Na */ {sym:'Na',name:'Sodium',        col:'#aa44ff', bg:'rgba(150,50,255,0.07)', glow:'rgba(150,50,255,0.3)'},
+  /* 12 Mg */ {sym:'Mg',name:'Magnesium',     col:'#33bb33', bg:'rgba(40,170,40,0.07)',  glow:'rgba(40,170,40,0.3)'},
+  /* 13 Al */ {sym:'Al',name:'Aluminium',     col:'#aabbcc', bg:'rgba(150,180,200,0.06)',glow:'rgba(150,180,200,0.25)'},
+  /* 14 Si */ {sym:'Si',name:'Silicon',       col:'#c8a060', bg:'rgba(180,140,70,0.07)', glow:'rgba(180,140,70,0.3)'},
+  /* 15 P  */ {sym:'P', name:'Phosphorus',    col:'#ff8800', bg:'rgba(255,120,0,0.07)',  glow:'rgba(255,120,0,0.35)'},
+  /* 16 S  */ {sym:'S', name:'Sulfur',        col:'#ffee00', bg:'rgba(255,230,0,0.07)',  glow:'rgba(255,230,0,0.4)'},
+  /* 17 Cl */ {sym:'Cl',name:'Chlorine',      col:'#55dd55', bg:'rgba(70,200,70,0.07)',  glow:'rgba(70,200,70,0.35)'},
+  /* 18 Ar */ {sym:'Ar',name:'Argon',         col:'#00e5cc', bg:'rgba(0,220,200,0.06)',  glow:'rgba(0,220,200,0.3)'},
+  /* 19 K  */ {sym:'K', name:'Potassium',     col:'#bb55ff', bg:'rgba(170,70,255,0.07)', glow:'rgba(170,70,255,0.3)'},
+  /* 20 Ca */ {sym:'Ca',name:'Calcium',       col:'#aaaaaa', bg:'rgba(150,150,150,0.06)',glow:'rgba(150,150,150,0.25)'},
+  /* 21 Sc */ {sym:'Sc',name:'Scandium',      col:'#999eaa', bg:'rgba(130,135,150,0.06)',glow:'rgba(130,135,150,0.2)'},
+  /* 22 Ti */ {sym:'Ti',name:'Titanium',      col:'#99aabb', bg:'rgba(130,150,170,0.06)',glow:'rgba(130,150,170,0.25)'},
+  /* 23 V  */ {sym:'V', name:'Vanadium',      col:'#8899cc', bg:'rgba(110,130,180,0.07)',glow:'rgba(110,130,180,0.3)'},
+  /* 24 Cr */ {sym:'Cr',name:'Chromium',      col:'#7799bb', bg:'rgba(100,140,170,0.07)',glow:'rgba(100,140,170,0.3)'},
+  /* 25 Mn */ {sym:'Mn',name:'Manganese',     col:'#cc66aa', bg:'rgba(190,80,150,0.07)', glow:'rgba(190,80,150,0.3)'},
+  /* 26 Fe */ {sym:'Fe',name:'Iron',          col:'#dd7733', bg:'rgba(210,100,40,0.07)', glow:'rgba(210,100,40,0.35)'},
+  /* 27 Co */ {sym:'Co',name:'Cobalt',        col:'#4466ee', bg:'rgba(60,90,220,0.07)',  glow:'rgba(60,90,220,0.35)'},
+  /* 28 Ni */ {sym:'Ni',name:'Nickel',        col:'#bbaa44', bg:'rgba(180,160,50,0.07)', glow:'rgba(180,160,50,0.3)'},
+  /* 29 Cu */ {sym:'Cu',name:'Copper',        col:'#dd8833', bg:'rgba(210,120,40,0.08)', glow:'rgba(210,120,40,0.4)'},
+  /* 30 Zn */ {sym:'Zn',name:'Zinc',          col:'#7799aa', bg:'rgba(100,140,160,0.07)',glow:'rgba(100,140,160,0.25)'},
+  /* 31 Ga */ {sym:'Ga',name:'Gallium',       col:'#99bbcc', bg:'rgba(140,180,200,0.06)',glow:'rgba(140,180,200,0.2)'},
+  /* 32 Ge */ {sym:'Ge',name:'Germanium',     col:'#778899', bg:'rgba(100,120,140,0.07)',glow:'rgba(100,120,140,0.2)'},
+  /* 33 As */ {sym:'As',name:'Arsenic',       col:'#cc9944', bg:'rgba(185,140,50,0.07)', glow:'rgba(185,140,50,0.3)'},
+  /* 34 Se */ {sym:'Se',name:'Selenium',      col:'#ee8833', bg:'rgba(220,120,40,0.07)', glow:'rgba(220,120,40,0.35)'},
+  /* 35 Br */ {sym:'Br',name:'Bromine',       col:'#cc3333', bg:'rgba(190,40,40,0.08)',  glow:'rgba(190,40,40,0.35)'},
+  /* 36 Kr */ {sym:'Kr',name:'Krypton',       col:'#55ddcc', bg:'rgba(70,210,190,0.06)', glow:'rgba(70,210,190,0.3)'},
+  /* 37 Rb */ {sym:'Rb',name:'Rubidium',      col:'#cc44ee', bg:'rgba(190,50,220,0.07)', glow:'rgba(190,50,220,0.3)'},
+  /* 38 Sr */ {sym:'Sr',name:'Strontium',     col:'#228844', bg:'rgba(30,130,60,0.07)',  glow:'rgba(30,130,60,0.3)'},
+  /* 39 Y  */ {sym:'Y', name:'Yttrium',       col:'#88aaaa', bg:'rgba(120,160,160,0.06)',glow:'rgba(120,160,160,0.2)'},
+  /* 40 Zr */ {sym:'Zr',name:'Zirconium',     col:'#6699bb', bg:'rgba(90,140,175,0.07)', glow:'rgba(90,140,175,0.25)'},
+  /* 41 Nb */ {sym:'Nb',name:'Niobium',       col:'#5577cc', bg:'rgba(70,100,190,0.07)', glow:'rgba(70,100,190,0.3)'},
+  /* 42 Mo */ {sym:'Mo',name:'Molybdenum',    col:'#6688bb', bg:'rgba(90,120,175,0.07)', glow:'rgba(90,120,175,0.25)'},
+  /* 43 Tc */ {sym:'Tc',name:'Technetium',    col:'#4488aa', bg:'rgba(55,120,155,0.07)', glow:'rgba(55,120,155,0.25)'},
+  /* 44 Ru */ {sym:'Ru',name:'Ruthenium',     col:'#7788aa', bg:'rgba(105,120,160,0.07)',glow:'rgba(105,120,160,0.25)'},
+  /* 45 Rh */ {sym:'Rh',name:'Rhodium',       col:'#99aacc', bg:'rgba(140,160,195,0.07)',glow:'rgba(140,160,195,0.25)'},
+  /* 46 Pd */ {sym:'Pd',name:'Palladium',     col:'#99aaaa', bg:'rgba(140,160,155,0.07)',glow:'rgba(140,160,155,0.2)'},
+  /* 47 Ag */ {sym:'Ag',name:'Silver',        col:'#dddddd', bg:'rgba(210,210,210,0.07)',glow:'rgba(210,210,210,0.35)'},
+  /* 48 Cd */ {sym:'Cd',name:'Cadmium',       col:'#dddd44', bg:'rgba(210,210,50,0.07)', glow:'rgba(210,210,50,0.35)'},
+  /* 49 In */ {sym:'In',name:'Indium',        col:'#778899', bg:'rgba(105,120,140,0.07)',glow:'rgba(105,120,140,0.2)'},
+  /* 50 Sn */ {sym:'Sn',name:'Tin',           col:'#9aabb5', bg:'rgba(140,160,175,0.07)',glow:'rgba(140,160,175,0.2)'},
+  /* 51 Sb */ {sym:'Sb',name:'Antimony',      col:'#9966bb', bg:'rgba(145,90,175,0.07)', glow:'rgba(145,90,175,0.3)'},
+  /* 52 Te */ {sym:'Te',name:'Tellurium',     col:'#cc8855', bg:'rgba(195,125,75,0.07)', glow:'rgba(195,125,75,0.3)'},
+  /* 53 I  */ {sym:'I', name:'Iodine',        col:'#9933cc', bg:'rgba(145,45,190,0.08)', glow:'rgba(145,45,190,0.4)'},
+  /* 54 Xe */ {sym:'Xe',name:'Xenon',         col:'#00ccee', bg:'rgba(0,195,225,0.07)',  glow:'rgba(0,195,225,0.35)'},
+  /* 55 Cs */ {sym:'Cs',name:'Caesium',       col:'#aa22ff', bg:'rgba(160,30,240,0.07)', glow:'rgba(160,30,240,0.35)'},
+  /* 56 Ba */ {sym:'Ba',name:'Barium',        col:'#ee7700', bg:'rgba(225,110,0,0.08)',  glow:'rgba(225,110,0,0.4)'},
+  /* 57 La */ {sym:'La',name:'Lanthanum',     col:'#77ccaa', bg:'rgba(105,195,155,0.07)',glow:'rgba(105,195,155,0.3)'},
+  /* 58 Ce */ {sym:'Ce',name:'Cerium',        col:'#eeee44', bg:'rgba(225,225,50,0.07)', glow:'rgba(225,225,50,0.35)'},
+  /* 59 Pr */ {sym:'Pr',name:'Praseodymium',  col:'#88dd44', bg:'rgba(120,210,50,0.07)', glow:'rgba(120,210,50,0.3)'},
+  /* 60 Nd */ {sym:'Nd',name:'Neodymium',     col:'#4499ff', bg:'rgba(55,145,255,0.07)', glow:'rgba(55,145,255,0.35)'},
+  /* 61 Pm */ {sym:'Pm',name:'Promethium',    col:'#bb44bb', bg:'rgba(175,55,175,0.07)', glow:'rgba(175,55,175,0.3)'},
+  /* 62 Sm */ {sym:'Sm',name:'Samarium',      col:'#ee6644', bg:'rgba(225,90,55,0.07)',  glow:'rgba(225,90,55,0.35)'},
+  /* 63 Eu */ {sym:'Eu',name:'Europium',      col:'#ff55aa', bg:'rgba(255,75,160,0.07)', glow:'rgba(255,75,160,0.35)'},
+  /* 64 Gd */ {sym:'Gd',name:'Gadolinium',    col:'#66ccff', bg:'rgba(90,195,255,0.07)', glow:'rgba(90,195,255,0.35)'},
+  /* 65 Tb */ {sym:'Tb',name:'Terbium',       col:'#44ee88', bg:'rgba(55,220,125,0.07)', glow:'rgba(55,220,125,0.35)'},
+  /* 66 Dy */ {sym:'Dy',name:'Dysprosium',    col:'#4499cc', bg:'rgba(55,145,195,0.07)', glow:'rgba(55,145,195,0.3)'},
+  /* 67 Ho */ {sym:'Ho',name:'Holmium',       col:'#ee5533', bg:'rgba(225,78,45,0.07)',  glow:'rgba(225,78,45,0.35)'},
+  /* 68 Er */ {sym:'Er',name:'Erbium',        col:'#ee88aa', bg:'rgba(225,125,160,0.07)',glow:'rgba(225,125,160,0.35)'},
+  /* 69 Tm */ {sym:'Tm',name:'Thulium',       col:'#00ffbb', bg:'rgba(0,240,175,0.07)',  glow:'rgba(0,240,175,0.35)'},
+  /* 70 Yb */ {sym:'Yb',name:'Ytterbium',     col:'#ffaa00', bg:'rgba(255,165,0,0.07)',  glow:'rgba(255,165,0,0.35)'},
+  /* 71 Lu */ {sym:'Lu',name:'Lutetium',      col:'#55eecc', bg:'rgba(75,225,195,0.07)', glow:'rgba(75,225,195,0.3)'},
+  /* 72 Hf */ {sym:'Hf',name:'Hafnium',       col:'#6699bb', bg:'rgba(90,140,175,0.07)', glow:'rgba(90,140,175,0.25)'},
+  /* 73 Ta */ {sym:'Ta',name:'Tantalum',       col:'#5577aa', bg:'rgba(75,110,165,0.07)', glow:'rgba(75,110,165,0.3)'},
+  /* 74 W  */ {sym:'W', name:'Tungsten',      col:'#778899', bg:'rgba(105,120,140,0.07)',glow:'rgba(105,120,140,0.25)'},
+  /* 75 Re */ {sym:'Re',name:'Rhenium',       col:'#6688bb', bg:'rgba(90,120,175,0.07)', glow:'rgba(90,120,175,0.25)'},
+  /* 76 Os */ {sym:'Os',name:'Osmium',        col:'#3366bb', bg:'rgba(45,95,175,0.08)',  glow:'rgba(45,95,175,0.35)'},
+  /* 77 Ir */ {sym:'Ir',name:'Iridium',       col:'#5599cc', bg:'rgba(75,145,195,0.07)', glow:'rgba(75,145,195,0.3)'},
+  /* 78 Pt */ {sym:'Pt',name:'Platinum',      col:'#ccddee', bg:'rgba(190,210,225,0.07)',glow:'rgba(190,210,225,0.3)'},
+  /* 79 Au */ {sym:'Au',name:'Gold',          col:'#ffcc00', bg:'rgba(255,200,0,0.09)',  glow:'rgba(255,200,0,0.5)'},
+  /* 80 Hg */ {sym:'Hg',name:'Mercury',       col:'#aabbcc', bg:'rgba(155,175,195,0.07)',glow:'rgba(155,175,195,0.25)'},
+  /* 81 Tl */ {sym:'Tl',name:'Thallium',      col:'#668899', bg:'rgba(90,125,145,0.07)', glow:'rgba(90,125,145,0.2)'},
+  /* 82 Pb */ {sym:'Pb',name:'Lead',          col:'#778877', bg:'rgba(105,125,105,0.07)',glow:'rgba(105,125,105,0.2)'},
+  /* 83 Bi */ {sym:'Bi',name:'Bismuth',       col:'#ff66cc', bg:'rgba(255,85,195,0.07)', glow:'rgba(255,85,195,0.4)'},
+  /* 84 Po */ {sym:'Po',name:'Polonium',      col:'#cc5544', bg:'rgba(195,75,60,0.07)',  glow:'rgba(195,75,60,0.35)'},
+  /* 85 At */ {sym:'At',name:'Astatine',      col:'#886644', bg:'rgba(130,95,55,0.07)',  glow:'rgba(130,95,55,0.25)'},
+  /* 86 Rn */ {sym:'Rn',name:'Radon',         col:'#33cccc', bg:'rgba(45,195,195,0.07)', glow:'rgba(45,195,195,0.35)'},
+  /* 87 Fr */ {sym:'Fr',name:'Francium',      col:'#dd44ff', bg:'rgba(210,55,255,0.07)', glow:'rgba(210,55,255,0.35)'},
+  /* 88 Ra */ {sym:'Ra',name:'Radium',        col:'#22dd88', bg:'rgba(30,210,125,0.08)', glow:'rgba(30,210,125,0.4)'},
+  /* 89 Ac */ {sym:'Ac',name:'Actinium',      col:'#44ffcc', bg:'rgba(55,240,195,0.08)', glow:'rgba(55,240,195,0.4)'},
+  /* 90 Th */ {sym:'Th',name:'Thorium',       col:'#999999', bg:'rgba(145,145,145,0.07)',glow:'rgba(145,145,145,0.25)'},
+  /* 91 Pa */ {sym:'Pa',name:'Protactinium',  col:'#bb7744', bg:'rgba(175,110,55,0.07)', glow:'rgba(175,110,55,0.3)'},
+  /* 92 U  */ {sym:'U', name:'Uranium',       col:'#44ff44', bg:'rgba(50,240,50,0.1)',   glow:'rgba(50,240,50,0.55)', special:true},
+];
+
+/* Build the mini scale bar */
+(function(){
+  const row=document.getElementById('scale-row');
+  for(let i=1;i<=92;i++){
+    const el=ELEMENTS[i];
+    const pip=document.createElement('div');
+    pip.className='scale-pip';
+    pip.title=`${i}. ${el.name}`;
+    pip.style.cssText=`color:${el.col};border-color:${el.col}22;background:${el.bg}`;
+    pip.textContent=el.sym;
+    row.appendChild(pip);
+  }
+})();
+
+/* ── Level math — logarithmic, 92 levels, goal = 10,000h ── */
+const GOAL_MINS=600000;
+const LEVELS=92;
+
+function getThreshold(lvl){
+  if(lvl<=0)return 0;
+  if(lvl>=LEVELS)return GOAL_MINS;
+  return Math.round(GOAL_MINS*Math.log1p((lvl/LEVELS)*(Math.E-1)));
+}
+
+function getLevelData(mins){
+  if(mins<=0)return{level:0,progress:0};
+  let level=0;
+  for(let l=LEVELS;l>=0;l--){if(mins>=getThreshold(l)){level=l;break;}}
+  level=Math.min(level,LEVELS);
+  if(level>=LEVELS)return{level:LEVELS,progress:100};
+  const cur=getThreshold(level),next=getThreshold(level+1);
+  return{level,progress:Math.max(0,Math.min(100,Math.round(((mins-cur)/(next-cur))*100)))};
+}
+
+/* ── Data ── */
+let skills=[],timers={},timerInterval=null,modalParentId=null,editingId=null,pendingIconData=null;
+
+function defaultSkills(){return[
+  {id:'d1',name:'Programming',minutes:1200,icon:null,expanded:true,children:[
+    {id:'d2',name:'Python',minutes:600,icon:null,expanded:false,children:[
+      {id:'d3',name:'Django',minutes:180,icon:null,expanded:false,children:[]}
+    ]},
+    {id:'d4',name:'JavaScript',minutes:300,icon:null,expanded:false,children:[]}
+  ]},
+  {id:'d5',name:'Guitar',minutes:450,icon:null,expanded:false,children:[]}
+];}
+
+function load(){try{const r=localStorage.getItem('skillexe_v3');skills=r?JSON.parse(r):defaultSkills();}catch(e){skills=defaultSkills();}}
+function save(){try{localStorage.setItem('skillexe_v3',JSON.stringify(skills));}catch(e){}render();}
+function getTotalMins(s){return s.minutes+s.children.reduce((a,c)=>a+getTotalMins(c),0);}
+function countAll(list){return list.reduce((a,s)=>a+1+countAll(s.children),0);}
+function findSkill(id,list){for(const s of list){if(s.id===id)return s;const f=findSkill(id,s.children);if(f)return f;}return null;}
+function removeSkill(id,list){const i=list.findIndex(s=>s.id===id);if(i!==-1){list.splice(i,1);return true;}for(const s of list){if(removeSkill(id,s.children))return true;}return false;}
+function fmtTime(m){if(m<60)return m+'m';const h=Math.floor(m/60),mn=m%60;return mn?h+'h '+mn+'m':h+'h';}
+function fmtSecs(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;if(h)return h+':'+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0');return m+':'+String(sc).padStart(2,'0');}
+
+/* ── Render ── */
+function render(){
+  updateStats();
+  const tree=document.getElementById('skill-tree');
+  tree.innerHTML='';
+  if(!skills.length){tree.innerHTML='<div class="empty-state"><div class="empty-title">NO SKILLS INITIALIZED</div><div class="empty-sub">[ + NEW SKILL ] to begin your protocol</div></div>';return;}
+  skills.forEach(s=>tree.appendChild(buildNode(s)));
+}
+
+function buildNode(skill){
+  const totalMins=getTotalMins(skill);
+  const{level,progress}=getLevelData(totalMins);
+  const el=level>0&&level<=92?ELEMENTS[level]:null;
+  const col=el?el.col:'#2d5c35';
+  const bg=el?el.bg:'rgba(0,0,0,0)';
+  const glow=el?el.glow:'rgba(0,255,65,0.2)';
+  const hasTimer=!!timers[skill.id];
+  const isSpecial=el&&el.special;
+
+  const node=document.createElement('div');
+  node.className='skill-node'+(hasTimer?' active-timer':'');
+  node.id='node-'+skill.id;
+  node.style.cssText=hasTimer?`border-color:rgba(255,170,0,0.4)`:``;
+
+  // Left accent bar color
+  const accentStyle=`background:${col};box-shadow:0 0 6px ${glow}`;
+
+  // Element block HTML
+  let elBlockHTML;
+  if(!el){
+    elBlockHTML=`<div class="element-block" style="border-right-color:rgba(255,255,255,0.07)">
+      <div class="el-number" style="color:#2d5c35">0</div>
+      <div class="el-symbol" style="color:#2d5c35;font-size:20px">—</div>
+      <div class="el-name" style="color:#2d5c35">Unranked</div>
+    </div>`;
+  } else {
+    const symbolAnim=isSpecial?`animation:fm-pulse 2.5s infinite`:'';
+    const symbolStyle=`color:${col};text-shadow:0 0 12px ${glow},0 0 24px ${glow.replace('0.','0.15')};${symbolAnim}`;
+    elBlockHTML=`<div class="element-block" style="background:${bg};border-right-color:${col}22">
+      <div class="el-number" style="color:${col};opacity:0.6">${level}</div>
+      <div class="el-symbol" style="${symbolStyle}">${el.sym}</div>
+      <div class="el-name" style="color:${col};opacity:0.75">${el.name}</div>
+    </div>`;
+  }
+
+  const iconHTML=skill.icon
+    ?`<div class="skill-icon"><img src="${skill.icon}" alt=""/></div>`
+    :`<div class="skill-icon">${skill.name.slice(0,2).toUpperCase()}</div>`;
+  const timerHTML=hasTimer?`<span class="timer-live" id="tlive-${skill.id}">${fmtSecs(timers[skill.id].elapsed)}</span>`:'';
+
+  node.innerHTML=`
+    <style>.pulse-${skill.id.replace(/\W/g,'_')}{animation:fm-pulse 2.5s infinite}
+    @keyframes fm-pulse{0%,100%{text-shadow:0 0 12px ${glow},0 0 24px ${glow}}50%{text-shadow:0 0 22px ${glow},0 0 44px ${glow}}}</style>
+    <div class="skill-header" onclick="toggleExpand('${skill.id}')">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:2px;${accentStyle}"></div>
+      ${elBlockHTML}
+      <div class="skill-body">
+        <div class="skill-top-row">
+          ${iconHTML}
+          <span class="expand-arrow${skill.expanded?' open':''}">▶</span>
+          <span class="skill-name">${skill.name}</span>
+          <div class="skill-meta-right">
+            ${timerHTML}
+            <span class="time-label">${fmtTime(totalMins)}</span>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-track">
+            <div class="progress-fill" style="width:${progress}%;background:${col};color:${col}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="skill-actions${skill.expanded?' visible':''}" id="actions-${skill.id}">
+      <div class="time-inputs">
+        <input type="number" id="ih-${skill.id}" placeholder="0" min="0" style="width:52px"/>
+        <span class="input-label">H</span>
+        <input type="number" id="im-${skill.id}" placeholder="0" min="0" max="59" style="width:52px"/>
+        <span class="input-label">M</span>
+        <button class="btn" onclick="addTime('${skill.id}')">[ +TIME ]</button>
+      </div>
+      <button class="btn${hasTimer?' timer-on':''}" id="tbtn-${skill.id}" onclick="toggleTimer('${skill.id}')">
+        ${hasTimer?'[ ■ STOP ]':'[ ▶ TIMER ]'}
+      </button>
+      <button class="btn" onclick="openAddModal('${skill.id}')">[ + SUB ]</button>
+      <button class="btn" onclick="openEditModal('${skill.id}')">[ EDIT ]</button>
+      <button class="btn danger" onclick="deleteSkill('${skill.id}')">[ DEL ]</button>
+    </div>`;
+
+  if(skill.expanded&&skill.children.length){
+    const wrap=document.createElement('div');
+    wrap.className='children-container';
+    skill.children.forEach(c=>wrap.appendChild(buildNode(c)));
+    node.appendChild(wrap);
+  }
+  return node;
+}
+
+function toggleExpand(id){const s=findSkill(id,skills);if(!s)return;s.expanded=!s.expanded;save();}
+
+function updateStats(){
+  const cnt=countAll(skills);
+  const totalMins=skills.reduce((a,s)=>a+getTotalMins(s),0);
+  const maxLvl=skills.length?Math.max(...skills.map(s=>getLevelData(getTotalMins(s)).level)):0;
+  const el=maxLvl>0&&maxLvl<=92?ELEMENTS[maxLvl]:null;
+  document.getElementById('stat-count').textContent=cnt;
+  document.getElementById('stat-hours').textContent=(totalMins/60).toFixed(1);
+  document.getElementById('stat-level').textContent=cnt?(el?`${el.sym} ${maxLvl}`:'—'):'—';
+  document.getElementById('stat-remain').textContent=cnt?fmtTime(Math.max(0,GOAL_MINS-totalMins)):'∞';
+}
+
+function addTime(id){
+  const h=parseFloat(document.getElementById('ih-'+id)?.value)||0;
+  const m=parseFloat(document.getElementById('im-'+id)?.value)||0;
+  const mins=Math.round(h*60+m);if(mins<=0)return;
+  const s=findSkill(id,skills);if(s){s.minutes+=mins;save();}
+  document.getElementById('ih-'+id).value='';
+  document.getElementById('im-'+id).value='';
+}
+
+function toggleTimer(id){
+  if(timers[id]){
+    const elapsed=timers[id].elapsed;delete timers[id];
+    const mins=Math.round(elapsed/60);
+    if(mins>0){const s=findSkill(id,skills);if(s)s.minutes+=mins;}
+    if(!Object.keys(timers).length){clearInterval(timerInterval);timerInterval=null;}
+    save();
+  }else{
+    timers[id]={start:Date.now(),elapsed:0};
+    if(!timerInterval){timerInterval=setInterval(()=>{Object.keys(timers).forEach(tid=>{timers[tid].elapsed=Math.floor((Date.now()-timers[tid].start)/1000);const el=document.getElementById('tlive-'+tid);if(el)el.textContent=fmtSecs(timers[tid].elapsed);});},1000);}
+    save();
+  }
+}
+
+function deleteSkill(id){if(!confirm('TERMINATE skill node and all sub-nodes?'))return;delete timers[id];removeSkill(id,skills);save();}
+
+function openAddModal(parentId){
+  modalParentId=parentId;editingId=null;pendingIconData=null;
+  document.getElementById('modal-title').textContent=parentId?'INITIALIZE SUBSKILL':'INITIALIZE SKILL';
+  document.getElementById('modal-name').value='';
+  document.getElementById('modal-hours').value='';
+  document.getElementById('modal-mins').value='';
+  document.getElementById('icon-preview-box').innerHTML='<span>?</span>';
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('modal-name').focus(),50);
+}
+
+function openEditModal(id){
+  const s=findSkill(id,skills);if(!s)return;
+  editingId=id;modalParentId=null;pendingIconData=s.icon||null;
+  document.getElementById('modal-title').textContent='MODIFY SKILL';
+  document.getElementById('modal-name').value=s.name;
+  document.getElementById('modal-hours').value=Math.floor(s.minutes/60)||'';
+  document.getElementById('modal-mins').value=s.minutes%60||'';
+  document.getElementById('icon-preview-box').innerHTML=s.icon?`<img src="${s.icon}"/>`:'<span>?</span>';
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('modal-name').focus(),50);
+}
+
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');pendingIconData=null;}
+
+function saveModal(){
+  const name=document.getElementById('modal-name').value.trim();
+  if(!name){document.getElementById('modal-name').focus();return;}
+  const h=parseFloat(document.getElementById('modal-hours').value)||0;
+  const m=parseFloat(document.getElementById('modal-mins').value)||0;
+  const mins=Math.round(h*60+m);
+  if(editingId){const s=findSkill(editingId,skills);if(s){s.name=name;s.minutes=mins;s.icon=pendingIconData||null;}}
+  else{
+    const ns={id:Date.now()+'',name,minutes:mins,icon:pendingIconData||null,expanded:false,children:[]};
+    if(modalParentId){const p=findSkill(modalParentId,skills);if(p){p.children.push(ns);p.expanded=true;}}
+    else skills.push(ns);
+  }
+  closeModal();save();
+}
+
+function handleIconUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{pendingIconData=ev.target.result;document.getElementById('icon-preview-box').innerHTML=`<img src="${pendingIconData}"/>`;};
+  reader.readAsDataURL(file);e.target.value='';
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify({version:3,skills},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='skillexe-backup-'+Date.now()+'.json';a.click();URL.revokeObjectURL(url);
+}
+
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{const data=JSON.parse(ev.target.result);const imported=data.skills||data;if(!Array.isArray(imported))throw new Error();if(!confirm('OVERWRITE current data with '+countAll(imported)+' imported skills?'))return;skills=imported;save();}
+    catch(err){alert('IMPORT ERROR: invalid file format');}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();if(e.key==='Enter'&&document.getElementById('modal-overlay').classList.contains('open'))saveModal();});
+document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('modal-overlay'))closeModal();});
+
+load();render();
+</script>
+</body>
+</html>

@@ -21,14 +21,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 #matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.04;z-index:0;pointer-events:none}
 .app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
 
-/* Header */
 .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);gap:1rem;flex-wrap:wrap}
 .logo-title{font-family:var(--display);font-size:22px;font-weight:900;letter-spacing:4px;color:var(--green);text-shadow:0 0 20px var(--green-glow),0 0 40px rgba(0,255,65,0.15);animation:flicker 8s infinite}
 .logo-sub{font-size:10px;color:var(--text-dim);letter-spacing:3px;margin-top:3px}
 @keyframes flicker{0%,96%,100%{opacity:1}97%{opacity:0.55}98%{opacity:1}99%{opacity:0.7}}
 .header-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 
-/* Buttons */
 .btn{background:transparent;border:1px solid var(--border-bright);padding:6px 14px;font-family:var(--mono);font-size:11px;color:var(--green-dim);cursor:crosshair;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s;position:relative;overflow:hidden}
 .btn::before{content:'';position:absolute;inset:0;background:var(--green-faint);transform:translateX(-100%);transition:transform 0.2s}
 .btn:hover::before{transform:translateX(0)}
@@ -42,15 +40,24 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .btn.danger:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 12px rgba(255,51,51,0.3)}
 .btn.timer-on{border-color:var(--amber);color:var(--amber);animation:pulse-amber 1.5s infinite}
 @keyframes pulse-amber{0%,100%{box-shadow:0 0 8px rgba(255,170,0,0.3)}50%{box-shadow:0 0 18px rgba(255,170,0,0.6)}}
+.btn.warn{border-color:rgba(255,170,0,0.5);color:rgba(255,170,0,0.8)}
+.btn.warn::before{background:rgba(255,170,0,0.05)}
+.btn.warn:hover{border-color:var(--amber);color:var(--amber);box-shadow:0 0 10px rgba(255,170,0,0.3)}
 
-/* Stats */
 .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
 .stat-cell{border:1px solid var(--border);padding:10px 14px;background:var(--panel);position:relative;overflow:hidden}
 .stat-cell::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green-dark),transparent)}
 .stat-label{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
 .stat-value{font-family:var(--display);font-size:18px;font-weight:700;color:var(--green);text-shadow:0 0 10px var(--green-glow)}
 
-/* Scale legend */
+/* ── Tabs ── */
+.tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.tab{padding:8px 20px;font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);cursor:crosshair;border:1px solid transparent;border-bottom:none;margin-bottom:-1px;transition:all 0.15s}
+.tab:hover{color:var(--text-dim)}
+.tab.active{color:var(--green);border-color:var(--border);border-bottom-color:var(--bg);background:var(--panel);text-shadow:0 0 8px var(--green-glow)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
 .scale-bar{margin-bottom:1.5rem;display:flex;flex-direction:column;gap:5px}
 .scale-row{display:flex;gap:3px;flex-wrap:wrap}
 .scale-pip{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:6px;font-family:var(--display);font-weight:700;border:1px solid rgba(255,255,255,0.1);cursor:default;transition:transform 0.1s}
@@ -60,26 +67,15 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 /* Skill tree */
 .skill-tree{display:flex;flex-direction:column;gap:6px}
 .skill-node{border:1px solid var(--border);background:var(--panel);transition:border-color 0.2s;position:relative}
-.skill-node:hover{border-color:rgba(255,255,255,0.25)}
+.skill-node:hover{border-color:rgba(255,255,255,0.2)}
 .skill-node::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;transition:background 0.2s,box-shadow 0.2s}
 .skill-node.active-timer::before{animation:pulse-bar 1.5s infinite}
 @keyframes pulse-bar{0%,100%{opacity:1}50%{opacity:0.35}}
-
 .skill-header{display:flex;align-items:stretch;cursor:crosshair;user-select:none}
-
-/* ── Element card ── */
-.element-block{
-  flex-shrink:0;width:74px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  border-right:1px solid rgba(255,255,255,0.07);
-  padding:6px 4px 5px;gap:0;
-  transition:background 0.3s;
-}
+.element-block{flex-shrink:0;width:74px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid rgba(255,255,255,0.07);padding:6px 4px 5px;gap:0;transition:background 0.3s}
 .el-number{font-family:var(--mono);font-size:9px;line-height:1;opacity:0.55;align-self:flex-start;padding-left:5px;width:100%;margin-bottom:1px}
 .el-symbol{font-family:var(--display);font-weight:900;font-size:26px;line-height:1;letter-spacing:-1px}
 .el-name{font-size:7px;letter-spacing:0.3px;text-transform:uppercase;text-align:center;line-height:1.3;margin-top:3px;white-space:nowrap;overflow:hidden;max-width:70px;text-overflow:ellipsis}
-
-/* Skill body */
 .skill-body{flex:1;min-width:0;display:flex;flex-direction:column;padding:8px 10px 0}
 .skill-top-row{display:flex;align-items:center;gap:8px}
 .skill-icon{width:24px;height:24px;flex-shrink:0;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;overflow:hidden;background:var(--bg3);color:var(--text-muted);font-family:var(--display)}
@@ -90,31 +86,52 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .skill-meta-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .timer-live{font-size:11px;color:var(--amber);letter-spacing:2px;text-shadow:0 0 8px rgba(255,170,0,0.5);min-width:56px;text-align:right}
 .time-label{font-size:11px;color:var(--text-dim)}
-
 .progress-wrap{padding:6px 0 8px}
 .progress-track{height:2px;background:rgba(255,255,255,0.06);position:relative}
 .progress-fill{height:100%;transition:width 0.5s ease;position:relative}
 .progress-fill::after{content:'';position:absolute;right:0;top:-1px;width:3px;height:4px;background:currentColor;box-shadow:0 0 5px currentColor}
-
-/* Actions */
 .skill-actions{display:none;padding:8px 12px 12px;border-top:1px solid var(--border);gap:6px;flex-wrap:wrap;align-items:center;background:var(--bg3)}
 .skill-actions.visible{display:flex}
 .time-inputs{display:flex;gap:4px;align-items:center}
-input[type=number],input[type=text]{background:var(--bg);border:1px solid var(--border);color:var(--green);font-family:var(--mono);font-size:12px;padding:5px 8px;outline:none;-moz-appearance:textfield}
+input[type=number],input[type=text],select{background:var(--bg);border:1px solid var(--border);color:var(--green);font-family:var(--mono);font-size:12px;padding:5px 8px;outline:none;-moz-appearance:textfield}
+select{cursor:crosshair;-webkit-appearance:none;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2300c832'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+select option{background:#111411;color:#00ff41}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
-input:focus{border-color:var(--green-dim);box-shadow:0 0 8px rgba(0,255,65,0.15)}
+input:focus,select:focus{border-color:var(--green-dim);box-shadow:0 0 8px rgba(0,255,65,0.15)}
 .input-label{font-size:10px;color:var(--text-muted);letter-spacing:1px}
-
 .children-container{margin-left:24px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:4px;padding-top:4px;margin-bottom:4px}
-
 .empty-state{text-align:center;padding:4rem 2rem;color:var(--text-muted);border:1px dashed var(--border)}
 .empty-title{font-family:var(--display);font-size:14px;letter-spacing:3px;color:var(--text-dim);margin-bottom:8px}
 .empty-sub{font-size:11px;letter-spacing:1px}
 
+/* ── Rankings tab ── */
+.rank-table{width:100%;border-collapse:collapse}
+.rank-table th{font-size:9px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;font-weight:400}
+.rank-table th.num{text-align:right}
+.rank-row{border-bottom:1px solid rgba(0,255,65,0.07);transition:background 0.15s}
+.rank-row:hover{background:var(--green-faint)}
+.rank-pos{font-family:var(--display);font-size:11px;color:var(--text-muted);padding:10px 10px 10px 14px;width:36px}
+.rank-pos.gold{color:#ffcc00;text-shadow:0 0 8px rgba(255,200,0,0.5)}
+.rank-pos.silver{color:#ccddee;text-shadow:0 0 6px rgba(190,210,225,0.4)}
+.rank-pos.bronze{color:#dd8833;text-shadow:0 0 6px rgba(210,120,40,0.4)}
+.rank-el{width:52px;padding:8px 6px}
+.rank-el-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid rgba(255,255,255,0.08)}
+.rank-el-sym{font-family:var(--display);font-weight:900;font-size:16px;line-height:1}
+.rank-el-num{font-size:7px;opacity:0.6;margin-top:1px}
+.rank-name{padding:10px 8px;flex:1}
+.rank-skill-name{font-family:var(--display);font-size:11px;letter-spacing:1px;color:var(--green)}
+.rank-path{font-size:9px;color:var(--text-muted);letter-spacing:1px;margin-top:2px}
+.rank-time{padding:10px 14px 10px 10px;text-align:right;white-space:nowrap}
+.rank-time-val{font-family:var(--display);font-size:13px}
+.rank-bar-wrap{padding:0 14px 8px;display:none}
+.rank-row:hover .rank-bar-wrap{display:block}
+.rank-bar-bg{height:2px;background:rgba(255,255,255,0.05)}
+.rank-bar-fill{height:100%;transition:width 0.4s}
+
 /* Modal */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:1000}
 .overlay.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--green-dim);box-shadow:0 0 40px rgba(0,255,65,0.15);width:380px;max-width:95vw;max-height:90vh;overflow-y:auto;animation:modal-in 0.15s ease}
+.modal{background:var(--bg2);border:1px solid var(--green-dim);box-shadow:0 0 40px rgba(0,255,65,0.15);width:420px;max-width:95vw;max-height:90vh;overflow-y:auto;animation:modal-in 0.15s ease}
 @keyframes modal-in{from{transform:scale(0.95) translateY(-10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 .modal-header{padding:14px 18px;border-bottom:1px solid var(--border);font-family:var(--display);font-size:13px;letter-spacing:3px;color:var(--green);text-shadow:0 0 10px var(--green-glow);display:flex;align-items:center;justify-content:space-between}
 .modal-close{background:none;border:none;color:var(--text-muted);cursor:crosshair;font-size:18px;line-height:1;padding:0 4px;transition:color 0.15s}
@@ -122,15 +139,34 @@ input:focus{border-color:var(--green-dim);box-shadow:0 0 8px rgba(0,255,65,0.15)
 .modal-body{padding:18px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.field input[type=text],.field input[type=number]{width:100%}
+.field input[type=text],.field input[type=number],.field select{width:100%}
 .field-row{display:flex;gap:8px}
 .field-row .field{flex:1}
-.icon-upload-area{border:1px dashed var(--border-bright);padding:16px;text-align:center;cursor:crosshair;transition:all 0.2s;background:var(--bg3)}
+.field-note{font-size:10px;color:var(--text-muted);margin-top:4px;letter-spacing:0.5px}
+.time-section{border:1px solid var(--border);padding:12px;margin-bottom:14px;background:var(--bg3)}
+.time-section-title{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.time-adj-row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.time-adj-row:last-child{margin-bottom:0}
+.time-adj-label{font-size:10px;color:var(--text-dim);width:60px;flex-shrink:0}
+.time-adj-inputs{display:flex;gap:4px;align-items:center;flex:1}
+.time-adj-inputs input{width:56px}
+.total-display{font-family:var(--display);font-size:13px;padding:8px 12px;border:1px solid var(--border);background:var(--bg);color:var(--green);text-align:center;letter-spacing:2px}
+.icon-upload-area{border:1px dashed var(--border-bright);padding:14px;text-align:center;cursor:crosshair;transition:all 0.2s;background:var(--bg3)}
 .icon-upload-area:hover{border-color:var(--green);background:var(--green-faint)}
-.icon-preview{width:48px;height:48px;margin:0 auto 8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--bg);overflow:hidden;color:var(--text-muted)}
+.icon-preview{width:44px;height:44px;margin:0 auto 6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--bg);overflow:hidden;color:var(--text-muted)}
 .icon-preview img{width:100%;height:100%;object-fit:cover}
 .icon-hint{font-size:10px;color:var(--text-muted);letter-spacing:1px}
 .modal-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+/* Move modal */
+.move-tree-item{padding:6px 10px;cursor:crosshair;display:flex;align-items:center;gap:8px;transition:background 0.15s;border-bottom:1px solid rgba(0,255,65,0.05)}
+.move-tree-item:hover{background:var(--green-faint)}
+.move-tree-item.selected{background:rgba(0,255,65,0.1);border-color:var(--border)}
+.move-tree-item.disabled{opacity:0.3;pointer-events:none}
+.move-indent{display:inline-block;width:16px;height:1px;border-bottom:1px solid var(--border);margin-right:2px;flex-shrink:0}
+.move-item-name{font-family:var(--display);font-size:11px;letter-spacing:1px;color:var(--green)}
+.move-item-root{font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.move-list{max-height:300px;overflow-y:auto;border:1px solid var(--border);background:var(--bg3)}
 
 .corner-tl,.corner-tr{position:fixed;top:12px;font-size:9px;color:var(--text-muted);letter-spacing:2px;z-index:2;pointer-events:none}
 .corner-tl{left:12px}.corner-tr{right:12px}
@@ -144,7 +180,7 @@ input[type=file]{display:none}
 <body>
 <canvas id="matrix-bg"></canvas>
 <div class="corner-tl" id="clock-display">--:--:--</div>
-<div class="corner-tr">SKILL.EXE v3.2</div>
+<div class="corner-tr">SKILL.EXE v3.3</div>
 
 <div class="app">
   <div class="header">
@@ -167,14 +203,37 @@ input[type=file]{display:none}
     <div class="stat-cell"><div class="stat-label">To Uranium</div><div class="stat-value" id="stat-remain">∞</div></div>
   </div>
 
-  <div class="scale-bar">
-    <div class="scale-label">ELEMENT SCALE</div>
-    <div class="scale-row" id="scale-row"></div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('tree')">[ SKILL TREE ]</div>
+    <div class="tab" onclick="switchTab('rank')">[ RANKINGS ]</div>
   </div>
 
-  <div class="skill-tree" id="skill-tree"></div>
+  <!-- Tree tab -->
+  <div class="tab-panel active" id="tab-tree">
+    <div class="scale-bar">
+      <div class="scale-label">ELEMENT SCALE — HOVER TO IDENTIFY</div>
+      <div class="scale-row" id="scale-row"></div>
+    </div>
+    <div class="skill-tree" id="skill-tree"></div>
+  </div>
+
+  <!-- Rankings tab -->
+  <div class="tab-panel" id="tab-rank">
+    <table class="rank-table">
+      <thead>
+        <tr>
+          <th style="width:36px">#</th>
+          <th style="width:52px">EL</th>
+          <th>SKILL</th>
+          <th class="num">TIME</th>
+        </tr>
+      </thead>
+      <tbody id="rank-body"></tbody>
+    </table>
+  </div>
 </div>
 
+<!-- Edit/Add Modal -->
 <div class="overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -186,10 +245,48 @@ input[type=file]{display:none}
         <label>Designation</label>
         <input type="text" id="modal-name" placeholder="e.g. Python" autocomplete="off"/>
       </div>
-      <div class="field-row">
-        <div class="field"><label>Hours logged</label><input type="number" id="modal-hours" placeholder="0" min="0"/></div>
-        <div class="field"><label>Minutes logged</label><input type="number" id="modal-mins" placeholder="0" min="0" max="59"/></div>
+
+      <!-- Time section: shown only in edit mode -->
+      <div id="time-section" class="time-section" style="display:none">
+        <div class="time-section-title">Direct time (own practice, not subskills)</div>
+        <div class="time-adj-row">
+          <span class="time-adj-label">Set total</span>
+          <div class="time-adj-inputs">
+            <input type="number" id="set-h" placeholder="h" min="0"/>
+            <span class="input-label">H</span>
+            <input type="number" id="set-m" placeholder="min" min="0" max="59"/>
+            <span class="input-label">M</span>
+          </div>
+        </div>
+        <div class="time-adj-row">
+          <span class="time-adj-label" style="color:var(--green-dim)">+ Add</span>
+          <div class="time-adj-inputs">
+            <input type="number" id="add-h" placeholder="h" min="0"/>
+            <span class="input-label">H</span>
+            <input type="number" id="add-m" placeholder="min" min="0" max="59"/>
+            <span class="input-label">M</span>
+          </div>
+        </div>
+        <div class="time-adj-row">
+          <span class="time-adj-label" style="color:rgba(255,100,100,0.8)">− Subtract</span>
+          <div class="time-adj-inputs">
+            <input type="number" id="sub-h" placeholder="h" min="0"/>
+            <span class="input-label">H</span>
+            <input type="number" id="sub-m" placeholder="min" min="0" max="59"/>
+            <span class="input-label">M</span>
+          </div>
+        </div>
+        <div class="total-display" id="time-preview">CURRENT: 0h 0m</div>
       </div>
+
+      <!-- Initial time for new skills -->
+      <div id="init-time-section">
+        <div class="field-row">
+          <div class="field"><label>Initial hours</label><input type="number" id="modal-hours" placeholder="0" min="0"/></div>
+          <div class="field"><label>Initial minutes</label><input type="number" id="modal-mins" placeholder="0" min="0" max="59"/></div>
+        </div>
+      </div>
+
       <div class="field">
         <label>Icon (optional)</label>
         <div class="icon-upload-area" onclick="document.getElementById('icon-file').click()">
@@ -206,6 +303,31 @@ input[type=file]{display:none}
   </div>
 </div>
 
+<!-- Move Modal -->
+<div class="overlay" id="move-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="move-title">MOVE SKILL</span>
+      <button class="modal-close" onclick="closeMoveModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Moving</label>
+        <div style="font-family:var(--display);font-size:12px;letter-spacing:1px;color:var(--green);padding:8px;border:1px solid var(--border);background:var(--bg3)" id="move-skill-name">—</div>
+      </div>
+      <div class="field">
+        <label>New parent (select destination)</label>
+        <div class="move-list" id="move-list"></div>
+        <div class="field-note" style="margin-top:6px">Select [ ROOT LEVEL ] to make it a top-level skill</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeMoveModal()">[ ABORT ]</button>
+      <button class="btn primary" onclick="confirmMove()">[ MOVE ]</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ── Matrix rain ── */
 (function(){
@@ -216,112 +338,106 @@ input[type=file]{display:none}
   function draw(){ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font='12px Share Tech Mono';for(let i=0;i<cols;i++){ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*16,drops[i]*16);if(drops[i]*16>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}
   resize();window.addEventListener('resize',resize);setInterval(draw,50);
 })();
-
 function updateClock(){const n=new Date();document.getElementById('clock-display').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':')}
 setInterval(updateClock,1000);updateClock();
 
-/* ══════════════════════════════════════════════════════
-   ALL 92 NATURAL ELEMENTS — CPK/Jmol-inspired colors
-   Each element has: sym, name, col (foreground), bg (card bg), glow
-   Colors tuned to be vivid and distinct on dark backgrounds.
-   ══════════════════════════════════════════════════════ */
-const ELEMENTS = [
-  null,
-  /* 1  H  */ {sym:'H', name:'Hydrogen',     col:'#e8e8e8', bg:'rgba(220,220,220,0.07)', glow:'rgba(220,220,220,0.3)'},
-  /* 2  He */ {sym:'He',name:'Helium',        col:'#00ffff', bg:'rgba(0,255,255,0.06)',   glow:'rgba(0,255,255,0.35)'},
-  /* 3  Li */ {sym:'Li',name:'Lithium',       col:'#cc66ff', bg:'rgba(180,80,255,0.07)',  glow:'rgba(180,80,255,0.3)'},
-  /* 4  Be */ {sym:'Be',name:'Beryllium',     col:'#44cc44', bg:'rgba(50,180,50,0.07)',   glow:'rgba(50,180,50,0.3)'},
-  /* 5  B  */ {sym:'B', name:'Boron',         col:'#e8a060', bg:'rgba(200,130,60,0.07)', glow:'rgba(200,130,60,0.3)'},
-  /* 6  C  */ {sym:'C', name:'Carbon',        col:'#aaaaaa', bg:'rgba(160,160,160,0.06)', glow:'rgba(160,160,160,0.25)'},
-  /* 7  N  */ {sym:'N', name:'Nitrogen',      col:'#4488ff', bg:'rgba(50,100,255,0.07)', glow:'rgba(50,100,255,0.35)'},
-  /* 8  O  */ {sym:'O', name:'Oxygen',        col:'#ff4444', bg:'rgba(255,50,50,0.07)',  glow:'rgba(255,50,50,0.35)'},
-  /* 9  F  */ {sym:'F', name:'Fluorine',      col:'#44dd44', bg:'rgba(50,210,50,0.07)',  glow:'rgba(50,210,50,0.35)'},
-  /* 10 Ne */ {sym:'Ne',name:'Neon',          col:'#ff6688', bg:'rgba(255,80,100,0.07)', glow:'rgba(255,80,100,0.4)'},
-  /* 11 Na */ {sym:'Na',name:'Sodium',        col:'#aa44ff', bg:'rgba(150,50,255,0.07)', glow:'rgba(150,50,255,0.3)'},
-  /* 12 Mg */ {sym:'Mg',name:'Magnesium',     col:'#33bb33', bg:'rgba(40,170,40,0.07)',  glow:'rgba(40,170,40,0.3)'},
-  /* 13 Al */ {sym:'Al',name:'Aluminium',     col:'#aabbcc', bg:'rgba(150,180,200,0.06)',glow:'rgba(150,180,200,0.25)'},
-  /* 14 Si */ {sym:'Si',name:'Silicon',       col:'#c8a060', bg:'rgba(180,140,70,0.07)', glow:'rgba(180,140,70,0.3)'},
-  /* 15 P  */ {sym:'P', name:'Phosphorus',    col:'#ff8800', bg:'rgba(255,120,0,0.07)',  glow:'rgba(255,120,0,0.35)'},
-  /* 16 S  */ {sym:'S', name:'Sulfur',        col:'#ffee00', bg:'rgba(255,230,0,0.07)',  glow:'rgba(255,230,0,0.4)'},
-  /* 17 Cl */ {sym:'Cl',name:'Chlorine',      col:'#55dd55', bg:'rgba(70,200,70,0.07)',  glow:'rgba(70,200,70,0.35)'},
-  /* 18 Ar */ {sym:'Ar',name:'Argon',         col:'#00e5cc', bg:'rgba(0,220,200,0.06)',  glow:'rgba(0,220,200,0.3)'},
-  /* 19 K  */ {sym:'K', name:'Potassium',     col:'#bb55ff', bg:'rgba(170,70,255,0.07)', glow:'rgba(170,70,255,0.3)'},
-  /* 20 Ca */ {sym:'Ca',name:'Calcium',       col:'#aaaaaa', bg:'rgba(150,150,150,0.06)',glow:'rgba(150,150,150,0.25)'},
-  /* 21 Sc */ {sym:'Sc',name:'Scandium',      col:'#999eaa', bg:'rgba(130,135,150,0.06)',glow:'rgba(130,135,150,0.2)'},
-  /* 22 Ti */ {sym:'Ti',name:'Titanium',      col:'#99aabb', bg:'rgba(130,150,170,0.06)',glow:'rgba(130,150,170,0.25)'},
-  /* 23 V  */ {sym:'V', name:'Vanadium',      col:'#8899cc', bg:'rgba(110,130,180,0.07)',glow:'rgba(110,130,180,0.3)'},
-  /* 24 Cr */ {sym:'Cr',name:'Chromium',      col:'#7799bb', bg:'rgba(100,140,170,0.07)',glow:'rgba(100,140,170,0.3)'},
-  /* 25 Mn */ {sym:'Mn',name:'Manganese',     col:'#cc66aa', bg:'rgba(190,80,150,0.07)', glow:'rgba(190,80,150,0.3)'},
-  /* 26 Fe */ {sym:'Fe',name:'Iron',          col:'#dd7733', bg:'rgba(210,100,40,0.07)', glow:'rgba(210,100,40,0.35)'},
-  /* 27 Co */ {sym:'Co',name:'Cobalt',        col:'#4466ee', bg:'rgba(60,90,220,0.07)',  glow:'rgba(60,90,220,0.35)'},
-  /* 28 Ni */ {sym:'Ni',name:'Nickel',        col:'#bbaa44', bg:'rgba(180,160,50,0.07)', glow:'rgba(180,160,50,0.3)'},
-  /* 29 Cu */ {sym:'Cu',name:'Copper',        col:'#dd8833', bg:'rgba(210,120,40,0.08)', glow:'rgba(210,120,40,0.4)'},
-  /* 30 Zn */ {sym:'Zn',name:'Zinc',          col:'#7799aa', bg:'rgba(100,140,160,0.07)',glow:'rgba(100,140,160,0.25)'},
-  /* 31 Ga */ {sym:'Ga',name:'Gallium',       col:'#99bbcc', bg:'rgba(140,180,200,0.06)',glow:'rgba(140,180,200,0.2)'},
-  /* 32 Ge */ {sym:'Ge',name:'Germanium',     col:'#778899', bg:'rgba(100,120,140,0.07)',glow:'rgba(100,120,140,0.2)'},
-  /* 33 As */ {sym:'As',name:'Arsenic',       col:'#cc9944', bg:'rgba(185,140,50,0.07)', glow:'rgba(185,140,50,0.3)'},
-  /* 34 Se */ {sym:'Se',name:'Selenium',      col:'#ee8833', bg:'rgba(220,120,40,0.07)', glow:'rgba(220,120,40,0.35)'},
-  /* 35 Br */ {sym:'Br',name:'Bromine',       col:'#cc3333', bg:'rgba(190,40,40,0.08)',  glow:'rgba(190,40,40,0.35)'},
-  /* 36 Kr */ {sym:'Kr',name:'Krypton',       col:'#55ddcc', bg:'rgba(70,210,190,0.06)', glow:'rgba(70,210,190,0.3)'},
-  /* 37 Rb */ {sym:'Rb',name:'Rubidium',      col:'#cc44ee', bg:'rgba(190,50,220,0.07)', glow:'rgba(190,50,220,0.3)'},
-  /* 38 Sr */ {sym:'Sr',name:'Strontium',     col:'#228844', bg:'rgba(30,130,60,0.07)',  glow:'rgba(30,130,60,0.3)'},
-  /* 39 Y  */ {sym:'Y', name:'Yttrium',       col:'#88aaaa', bg:'rgba(120,160,160,0.06)',glow:'rgba(120,160,160,0.2)'},
-  /* 40 Zr */ {sym:'Zr',name:'Zirconium',     col:'#6699bb', bg:'rgba(90,140,175,0.07)', glow:'rgba(90,140,175,0.25)'},
-  /* 41 Nb */ {sym:'Nb',name:'Niobium',       col:'#5577cc', bg:'rgba(70,100,190,0.07)', glow:'rgba(70,100,190,0.3)'},
-  /* 42 Mo */ {sym:'Mo',name:'Molybdenum',    col:'#6688bb', bg:'rgba(90,120,175,0.07)', glow:'rgba(90,120,175,0.25)'},
-  /* 43 Tc */ {sym:'Tc',name:'Technetium',    col:'#4488aa', bg:'rgba(55,120,155,0.07)', glow:'rgba(55,120,155,0.25)'},
-  /* 44 Ru */ {sym:'Ru',name:'Ruthenium',     col:'#7788aa', bg:'rgba(105,120,160,0.07)',glow:'rgba(105,120,160,0.25)'},
-  /* 45 Rh */ {sym:'Rh',name:'Rhodium',       col:'#99aacc', bg:'rgba(140,160,195,0.07)',glow:'rgba(140,160,195,0.25)'},
-  /* 46 Pd */ {sym:'Pd',name:'Palladium',     col:'#99aaaa', bg:'rgba(140,160,155,0.07)',glow:'rgba(140,160,155,0.2)'},
-  /* 47 Ag */ {sym:'Ag',name:'Silver',        col:'#dddddd', bg:'rgba(210,210,210,0.07)',glow:'rgba(210,210,210,0.35)'},
-  /* 48 Cd */ {sym:'Cd',name:'Cadmium',       col:'#dddd44', bg:'rgba(210,210,50,0.07)', glow:'rgba(210,210,50,0.35)'},
-  /* 49 In */ {sym:'In',name:'Indium',        col:'#778899', bg:'rgba(105,120,140,0.07)',glow:'rgba(105,120,140,0.2)'},
-  /* 50 Sn */ {sym:'Sn',name:'Tin',           col:'#9aabb5', bg:'rgba(140,160,175,0.07)',glow:'rgba(140,160,175,0.2)'},
-  /* 51 Sb */ {sym:'Sb',name:'Antimony',      col:'#9966bb', bg:'rgba(145,90,175,0.07)', glow:'rgba(145,90,175,0.3)'},
-  /* 52 Te */ {sym:'Te',name:'Tellurium',     col:'#cc8855', bg:'rgba(195,125,75,0.07)', glow:'rgba(195,125,75,0.3)'},
-  /* 53 I  */ {sym:'I', name:'Iodine',        col:'#9933cc', bg:'rgba(145,45,190,0.08)', glow:'rgba(145,45,190,0.4)'},
-  /* 54 Xe */ {sym:'Xe',name:'Xenon',         col:'#00ccee', bg:'rgba(0,195,225,0.07)',  glow:'rgba(0,195,225,0.35)'},
-  /* 55 Cs */ {sym:'Cs',name:'Caesium',       col:'#aa22ff', bg:'rgba(160,30,240,0.07)', glow:'rgba(160,30,240,0.35)'},
-  /* 56 Ba */ {sym:'Ba',name:'Barium',        col:'#ee7700', bg:'rgba(225,110,0,0.08)',  glow:'rgba(225,110,0,0.4)'},
-  /* 57 La */ {sym:'La',name:'Lanthanum',     col:'#77ccaa', bg:'rgba(105,195,155,0.07)',glow:'rgba(105,195,155,0.3)'},
-  /* 58 Ce */ {sym:'Ce',name:'Cerium',        col:'#eeee44', bg:'rgba(225,225,50,0.07)', glow:'rgba(225,225,50,0.35)'},
-  /* 59 Pr */ {sym:'Pr',name:'Praseodymium',  col:'#88dd44', bg:'rgba(120,210,50,0.07)', glow:'rgba(120,210,50,0.3)'},
-  /* 60 Nd */ {sym:'Nd',name:'Neodymium',     col:'#4499ff', bg:'rgba(55,145,255,0.07)', glow:'rgba(55,145,255,0.35)'},
-  /* 61 Pm */ {sym:'Pm',name:'Promethium',    col:'#bb44bb', bg:'rgba(175,55,175,0.07)', glow:'rgba(175,55,175,0.3)'},
-  /* 62 Sm */ {sym:'Sm',name:'Samarium',      col:'#ee6644', bg:'rgba(225,90,55,0.07)',  glow:'rgba(225,90,55,0.35)'},
-  /* 63 Eu */ {sym:'Eu',name:'Europium',      col:'#ff55aa', bg:'rgba(255,75,160,0.07)', glow:'rgba(255,75,160,0.35)'},
-  /* 64 Gd */ {sym:'Gd',name:'Gadolinium',    col:'#66ccff', bg:'rgba(90,195,255,0.07)', glow:'rgba(90,195,255,0.35)'},
-  /* 65 Tb */ {sym:'Tb',name:'Terbium',       col:'#44ee88', bg:'rgba(55,220,125,0.07)', glow:'rgba(55,220,125,0.35)'},
-  /* 66 Dy */ {sym:'Dy',name:'Dysprosium',    col:'#4499cc', bg:'rgba(55,145,195,0.07)', glow:'rgba(55,145,195,0.3)'},
-  /* 67 Ho */ {sym:'Ho',name:'Holmium',       col:'#ee5533', bg:'rgba(225,78,45,0.07)',  glow:'rgba(225,78,45,0.35)'},
-  /* 68 Er */ {sym:'Er',name:'Erbium',        col:'#ee88aa', bg:'rgba(225,125,160,0.07)',glow:'rgba(225,125,160,0.35)'},
-  /* 69 Tm */ {sym:'Tm',name:'Thulium',       col:'#00ffbb', bg:'rgba(0,240,175,0.07)',  glow:'rgba(0,240,175,0.35)'},
-  /* 70 Yb */ {sym:'Yb',name:'Ytterbium',     col:'#ffaa00', bg:'rgba(255,165,0,0.07)',  glow:'rgba(255,165,0,0.35)'},
-  /* 71 Lu */ {sym:'Lu',name:'Lutetium',      col:'#55eecc', bg:'rgba(75,225,195,0.07)', glow:'rgba(75,225,195,0.3)'},
-  /* 72 Hf */ {sym:'Hf',name:'Hafnium',       col:'#6699bb', bg:'rgba(90,140,175,0.07)', glow:'rgba(90,140,175,0.25)'},
-  /* 73 Ta */ {sym:'Ta',name:'Tantalum',       col:'#5577aa', bg:'rgba(75,110,165,0.07)', glow:'rgba(75,110,165,0.3)'},
-  /* 74 W  */ {sym:'W', name:'Tungsten',      col:'#778899', bg:'rgba(105,120,140,0.07)',glow:'rgba(105,120,140,0.25)'},
-  /* 75 Re */ {sym:'Re',name:'Rhenium',       col:'#6688bb', bg:'rgba(90,120,175,0.07)', glow:'rgba(90,120,175,0.25)'},
-  /* 76 Os */ {sym:'Os',name:'Osmium',        col:'#3366bb', bg:'rgba(45,95,175,0.08)',  glow:'rgba(45,95,175,0.35)'},
-  /* 77 Ir */ {sym:'Ir',name:'Iridium',       col:'#5599cc', bg:'rgba(75,145,195,0.07)', glow:'rgba(75,145,195,0.3)'},
-  /* 78 Pt */ {sym:'Pt',name:'Platinum',      col:'#ccddee', bg:'rgba(190,210,225,0.07)',glow:'rgba(190,210,225,0.3)'},
-  /* 79 Au */ {sym:'Au',name:'Gold',          col:'#ffcc00', bg:'rgba(255,200,0,0.09)',  glow:'rgba(255,200,0,0.5)'},
-  /* 80 Hg */ {sym:'Hg',name:'Mercury',       col:'#aabbcc', bg:'rgba(155,175,195,0.07)',glow:'rgba(155,175,195,0.25)'},
-  /* 81 Tl */ {sym:'Tl',name:'Thallium',      col:'#668899', bg:'rgba(90,125,145,0.07)', glow:'rgba(90,125,145,0.2)'},
-  /* 82 Pb */ {sym:'Pb',name:'Lead',          col:'#778877', bg:'rgba(105,125,105,0.07)',glow:'rgba(105,125,105,0.2)'},
-  /* 83 Bi */ {sym:'Bi',name:'Bismuth',       col:'#ff66cc', bg:'rgba(255,85,195,0.07)', glow:'rgba(255,85,195,0.4)'},
-  /* 84 Po */ {sym:'Po',name:'Polonium',      col:'#cc5544', bg:'rgba(195,75,60,0.07)',  glow:'rgba(195,75,60,0.35)'},
-  /* 85 At */ {sym:'At',name:'Astatine',      col:'#886644', bg:'rgba(130,95,55,0.07)',  glow:'rgba(130,95,55,0.25)'},
-  /* 86 Rn */ {sym:'Rn',name:'Radon',         col:'#33cccc', bg:'rgba(45,195,195,0.07)', glow:'rgba(45,195,195,0.35)'},
-  /* 87 Fr */ {sym:'Fr',name:'Francium',      col:'#dd44ff', bg:'rgba(210,55,255,0.07)', glow:'rgba(210,55,255,0.35)'},
-  /* 88 Ra */ {sym:'Ra',name:'Radium',        col:'#22dd88', bg:'rgba(30,210,125,0.08)', glow:'rgba(30,210,125,0.4)'},
-  /* 89 Ac */ {sym:'Ac',name:'Actinium',      col:'#44ffcc', bg:'rgba(55,240,195,0.08)', glow:'rgba(55,240,195,0.4)'},
-  /* 90 Th */ {sym:'Th',name:'Thorium',       col:'#999999', bg:'rgba(145,145,145,0.07)',glow:'rgba(145,145,145,0.25)'},
-  /* 91 Pa */ {sym:'Pa',name:'Protactinium',  col:'#bb7744', bg:'rgba(175,110,55,0.07)', glow:'rgba(175,110,55,0.3)'},
-  /* 92 U  */ {sym:'U', name:'Uranium',       col:'#44ff44', bg:'rgba(50,240,50,0.1)',   glow:'rgba(50,240,50,0.55)', special:true},
+/* ── 92 Elements ── */
+const ELEMENTS=[null,
+  {sym:'H', name:'Hydrogen',    col:'#e8e8e8',bg:'rgba(220,220,220,0.07)',glow:'rgba(220,220,220,0.3)'},
+  {sym:'He',name:'Helium',      col:'#00ffff',bg:'rgba(0,255,255,0.06)',  glow:'rgba(0,255,255,0.35)'},
+  {sym:'Li',name:'Lithium',     col:'#cc66ff',bg:'rgba(180,80,255,0.07)', glow:'rgba(180,80,255,0.3)'},
+  {sym:'Be',name:'Beryllium',   col:'#44cc44',bg:'rgba(50,180,50,0.07)',  glow:'rgba(50,180,50,0.3)'},
+  {sym:'B', name:'Boron',       col:'#e8a060',bg:'rgba(200,130,60,0.07)',glow:'rgba(200,130,60,0.3)'},
+  {sym:'C', name:'Carbon',      col:'#aaaaaa',bg:'rgba(160,160,160,0.06)',glow:'rgba(160,160,160,0.25)'},
+  {sym:'N', name:'Nitrogen',    col:'#4488ff',bg:'rgba(50,100,255,0.07)', glow:'rgba(50,100,255,0.35)'},
+  {sym:'O', name:'Oxygen',      col:'#ff4444',bg:'rgba(255,50,50,0.07)',  glow:'rgba(255,50,50,0.35)'},
+  {sym:'F', name:'Fluorine',    col:'#44dd44',bg:'rgba(50,210,50,0.07)',  glow:'rgba(50,210,50,0.35)'},
+  {sym:'Ne',name:'Neon',        col:'#ff6688',bg:'rgba(255,80,100,0.07)', glow:'rgba(255,80,100,0.4)'},
+  {sym:'Na',name:'Sodium',      col:'#aa44ff',bg:'rgba(150,50,255,0.07)', glow:'rgba(150,50,255,0.3)'},
+  {sym:'Mg',name:'Magnesium',   col:'#33bb33',bg:'rgba(40,170,40,0.07)',  glow:'rgba(40,170,40,0.3)'},
+  {sym:'Al',name:'Aluminium',   col:'#aabbcc',bg:'rgba(150,180,200,0.06)',glow:'rgba(150,180,200,0.25)'},
+  {sym:'Si',name:'Silicon',     col:'#c8a060',bg:'rgba(180,140,70,0.07)', glow:'rgba(180,140,70,0.3)'},
+  {sym:'P', name:'Phosphorus',  col:'#ff8800',bg:'rgba(255,120,0,0.07)',  glow:'rgba(255,120,0,0.35)'},
+  {sym:'S', name:'Sulfur',      col:'#ffee00',bg:'rgba(255,230,0,0.07)',  glow:'rgba(255,230,0,0.4)'},
+  {sym:'Cl',name:'Chlorine',    col:'#55dd55',bg:'rgba(70,200,70,0.07)',  glow:'rgba(70,200,70,0.35)'},
+  {sym:'Ar',name:'Argon',       col:'#00e5cc',bg:'rgba(0,220,200,0.06)',  glow:'rgba(0,220,200,0.3)'},
+  {sym:'K', name:'Potassium',   col:'#bb55ff',bg:'rgba(170,70,255,0.07)', glow:'rgba(170,70,255,0.3)'},
+  {sym:'Ca',name:'Calcium',     col:'#aaaaaa',bg:'rgba(150,150,150,0.06)',glow:'rgba(150,150,150,0.25)'},
+  {sym:'Sc',name:'Scandium',    col:'#999eaa',bg:'rgba(130,135,150,0.06)',glow:'rgba(130,135,150,0.2)'},
+  {sym:'Ti',name:'Titanium',    col:'#99aabb',bg:'rgba(130,150,170,0.06)',glow:'rgba(130,150,170,0.25)'},
+  {sym:'V', name:'Vanadium',    col:'#8899cc',bg:'rgba(110,130,180,0.07)',glow:'rgba(110,130,180,0.3)'},
+  {sym:'Cr',name:'Chromium',    col:'#7799bb',bg:'rgba(100,140,170,0.07)',glow:'rgba(100,140,170,0.3)'},
+  {sym:'Mn',name:'Manganese',   col:'#cc66aa',bg:'rgba(190,80,150,0.07)', glow:'rgba(190,80,150,0.3)'},
+  {sym:'Fe',name:'Iron',        col:'#dd7733',bg:'rgba(210,100,40,0.07)', glow:'rgba(210,100,40,0.35)'},
+  {sym:'Co',name:'Cobalt',      col:'#4466ee',bg:'rgba(60,90,220,0.07)',  glow:'rgba(60,90,220,0.35)'},
+  {sym:'Ni',name:'Nickel',      col:'#bbaa44',bg:'rgba(180,160,50,0.07)', glow:'rgba(180,160,50,0.3)'},
+  {sym:'Cu',name:'Copper',      col:'#dd8833',bg:'rgba(210,120,40,0.08)', glow:'rgba(210,120,40,0.4)'},
+  {sym:'Zn',name:'Zinc',        col:'#7799aa',bg:'rgba(100,140,160,0.07)',glow:'rgba(100,140,160,0.25)'},
+  {sym:'Ga',name:'Gallium',     col:'#99bbcc',bg:'rgba(140,180,200,0.06)',glow:'rgba(140,180,200,0.2)'},
+  {sym:'Ge',name:'Germanium',   col:'#778899',bg:'rgba(100,120,140,0.07)',glow:'rgba(100,120,140,0.2)'},
+  {sym:'As',name:'Arsenic',     col:'#cc9944',bg:'rgba(185,140,50,0.07)', glow:'rgba(185,140,50,0.3)'},
+  {sym:'Se',name:'Selenium',    col:'#ee8833',bg:'rgba(220,120,40,0.07)', glow:'rgba(220,120,40,0.35)'},
+  {sym:'Br',name:'Bromine',     col:'#cc3333',bg:'rgba(190,40,40,0.08)',  glow:'rgba(190,40,40,0.35)'},
+  {sym:'Kr',name:'Krypton',     col:'#55ddcc',bg:'rgba(70,210,190,0.06)', glow:'rgba(70,210,190,0.3)'},
+  {sym:'Rb',name:'Rubidium',    col:'#cc44ee',bg:'rgba(190,50,220,0.07)', glow:'rgba(190,50,220,0.3)'},
+  {sym:'Sr',name:'Strontium',   col:'#228844',bg:'rgba(30,130,60,0.07)',  glow:'rgba(30,130,60,0.3)'},
+  {sym:'Y', name:'Yttrium',     col:'#88aaaa',bg:'rgba(120,160,160,0.06)',glow:'rgba(120,160,160,0.2)'},
+  {sym:'Zr',name:'Zirconium',   col:'#6699bb',bg:'rgba(90,140,175,0.07)', glow:'rgba(90,140,175,0.25)'},
+  {sym:'Nb',name:'Niobium',     col:'#5577cc',bg:'rgba(70,100,190,0.07)', glow:'rgba(70,100,190,0.3)'},
+  {sym:'Mo',name:'Molybdenum',  col:'#6688bb',bg:'rgba(90,120,175,0.07)', glow:'rgba(90,120,175,0.25)'},
+  {sym:'Tc',name:'Technetium',  col:'#4488aa',bg:'rgba(55,120,155,0.07)', glow:'rgba(55,120,155,0.25)'},
+  {sym:'Ru',name:'Ruthenium',   col:'#7788aa',bg:'rgba(105,120,160,0.07)',glow:'rgba(105,120,160,0.25)'},
+  {sym:'Rh',name:'Rhodium',     col:'#99aacc',bg:'rgba(140,160,195,0.07)',glow:'rgba(140,160,195,0.25)'},
+  {sym:'Pd',name:'Palladium',   col:'#99aaaa',bg:'rgba(140,160,155,0.07)',glow:'rgba(140,160,155,0.2)'},
+  {sym:'Ag',name:'Silver',      col:'#dddddd',bg:'rgba(210,210,210,0.07)',glow:'rgba(210,210,210,0.35)'},
+  {sym:'Cd',name:'Cadmium',     col:'#dddd44',bg:'rgba(210,210,50,0.07)', glow:'rgba(210,210,50,0.35)'},
+  {sym:'In',name:'Indium',      col:'#778899',bg:'rgba(105,120,140,0.07)',glow:'rgba(105,120,140,0.2)'},
+  {sym:'Sn',name:'Tin',         col:'#9aabb5',bg:'rgba(140,160,175,0.07)',glow:'rgba(140,160,175,0.2)'},
+  {sym:'Sb',name:'Antimony',    col:'#9966bb',bg:'rgba(145,90,175,0.07)', glow:'rgba(145,90,175,0.3)'},
+  {sym:'Te',name:'Tellurium',   col:'#cc8855',bg:'rgba(195,125,75,0.07)', glow:'rgba(195,125,75,0.3)'},
+  {sym:'I', name:'Iodine',      col:'#9933cc',bg:'rgba(145,45,190,0.08)', glow:'rgba(145,45,190,0.4)'},
+  {sym:'Xe',name:'Xenon',       col:'#00ccee',bg:'rgba(0,195,225,0.07)',  glow:'rgba(0,195,225,0.35)'},
+  {sym:'Cs',name:'Caesium',     col:'#aa22ff',bg:'rgba(160,30,240,0.07)', glow:'rgba(160,30,240,0.35)'},
+  {sym:'Ba',name:'Barium',      col:'#ee7700',bg:'rgba(225,110,0,0.08)',  glow:'rgba(225,110,0,0.4)'},
+  {sym:'La',name:'Lanthanum',   col:'#77ccaa',bg:'rgba(105,195,155,0.07)',glow:'rgba(105,195,155,0.3)'},
+  {sym:'Ce',name:'Cerium',      col:'#eeee44',bg:'rgba(225,225,50,0.07)', glow:'rgba(225,225,50,0.35)'},
+  {sym:'Pr',name:'Praseodymium',col:'#88dd44',bg:'rgba(120,210,50,0.07)', glow:'rgba(120,210,50,0.3)'},
+  {sym:'Nd',name:'Neodymium',   col:'#4499ff',bg:'rgba(55,145,255,0.07)', glow:'rgba(55,145,255,0.35)'},
+  {sym:'Pm',name:'Promethium',  col:'#bb44bb',bg:'rgba(175,55,175,0.07)', glow:'rgba(175,55,175,0.3)'},
+  {sym:'Sm',name:'Samarium',    col:'#ee6644',bg:'rgba(225,90,55,0.07)',  glow:'rgba(225,90,55,0.35)'},
+  {sym:'Eu',name:'Europium',    col:'#ff55aa',bg:'rgba(255,75,160,0.07)', glow:'rgba(255,75,160,0.35)'},
+  {sym:'Gd',name:'Gadolinium',  col:'#66ccff',bg:'rgba(90,195,255,0.07)', glow:'rgba(90,195,255,0.35)'},
+  {sym:'Tb',name:'Terbium',     col:'#44ee88',bg:'rgba(55,220,125,0.07)', glow:'rgba(55,220,125,0.35)'},
+  {sym:'Dy',name:'Dysprosium',  col:'#4499cc',bg:'rgba(55,145,195,0.07)', glow:'rgba(55,145,195,0.3)'},
+  {sym:'Ho',name:'Holmium',     col:'#ee5533',bg:'rgba(225,78,45,0.07)',  glow:'rgba(225,78,45,0.35)'},
+  {sym:'Er',name:'Erbium',      col:'#ee88aa',bg:'rgba(225,125,160,0.07)',glow:'rgba(225,125,160,0.35)'},
+  {sym:'Tm',name:'Thulium',     col:'#00ffbb',bg:'rgba(0,240,175,0.07)',  glow:'rgba(0,240,175,0.35)'},
+  {sym:'Yb',name:'Ytterbium',   col:'#ffaa00',bg:'rgba(255,165,0,0.07)',  glow:'rgba(255,165,0,0.35)'},
+  {sym:'Lu',name:'Lutetium',    col:'#55eecc',bg:'rgba(75,225,195,0.07)', glow:'rgba(75,225,195,0.3)'},
+  {sym:'Hf',name:'Hafnium',     col:'#6699bb',bg:'rgba(90,140,175,0.07)', glow:'rgba(90,140,175,0.25)'},
+  {sym:'Ta',name:'Tantalum',    col:'#5577aa',bg:'rgba(75,110,165,0.07)', glow:'rgba(75,110,165,0.3)'},
+  {sym:'W', name:'Tungsten',    col:'#778899',bg:'rgba(105,120,140,0.07)',glow:'rgba(105,120,140,0.25)'},
+  {sym:'Re',name:'Rhenium',     col:'#6688bb',bg:'rgba(90,120,175,0.07)', glow:'rgba(90,120,175,0.25)'},
+  {sym:'Os',name:'Osmium',      col:'#3366bb',bg:'rgba(45,95,175,0.08)',  glow:'rgba(45,95,175,0.35)'},
+  {sym:'Ir',name:'Iridium',     col:'#5599cc',bg:'rgba(75,145,195,0.07)', glow:'rgba(75,145,195,0.3)'},
+  {sym:'Pt',name:'Platinum',    col:'#ccddee',bg:'rgba(190,210,225,0.07)',glow:'rgba(190,210,225,0.3)'},
+  {sym:'Au',name:'Gold',        col:'#ffcc00',bg:'rgba(255,200,0,0.09)',  glow:'rgba(255,200,0,0.5)',special:true},
+  {sym:'Hg',name:'Mercury',     col:'#aabbcc',bg:'rgba(155,175,195,0.07)',glow:'rgba(155,175,195,0.25)'},
+  {sym:'Tl',name:'Thallium',    col:'#668899',bg:'rgba(90,125,145,0.07)', glow:'rgba(90,125,145,0.2)'},
+  {sym:'Pb',name:'Lead',        col:'#778877',bg:'rgba(105,125,105,0.07)',glow:'rgba(105,125,105,0.2)'},
+  {sym:'Bi',name:'Bismuth',     col:'#ff66cc',bg:'rgba(255,85,195,0.07)', glow:'rgba(255,85,195,0.4)'},
+  {sym:'Po',name:'Polonium',    col:'#cc5544',bg:'rgba(195,75,60,0.07)',  glow:'rgba(195,75,60,0.35)'},
+  {sym:'At',name:'Astatine',    col:'#886644',bg:'rgba(130,95,55,0.07)',  glow:'rgba(130,95,55,0.25)'},
+  {sym:'Rn',name:'Radon',       col:'#33cccc',bg:'rgba(45,195,195,0.07)', glow:'rgba(45,195,195,0.35)'},
+  {sym:'Fr',name:'Francium',    col:'#dd44ff',bg:'rgba(210,55,255,0.07)', glow:'rgba(210,55,255,0.35)'},
+  {sym:'Ra',name:'Radium',      col:'#22dd88',bg:'rgba(30,210,125,0.08)', glow:'rgba(30,210,125,0.4)'},
+  {sym:'Ac',name:'Actinium',    col:'#44ffcc',bg:'rgba(55,240,195,0.08)', glow:'rgba(55,240,195,0.4)'},
+  {sym:'Th',name:'Thorium',     col:'#999999',bg:'rgba(145,145,145,0.07)',glow:'rgba(145,145,145,0.25)'},
+  {sym:'Pa',name:'Protactinium',col:'#bb7744',bg:'rgba(175,110,55,0.07)', glow:'rgba(175,110,55,0.3)'},
+  {sym:'U', name:'Uranium',     col:'#44ff44',bg:'rgba(50,240,50,0.1)',   glow:'rgba(50,240,50,0.55)',special:true},
 ];
 
-/* Build the mini scale bar */
+/* Scale bar */
 (function(){
   const row=document.getElementById('scale-row');
   for(let i=1;i<=92;i++){
@@ -335,20 +451,12 @@ const ELEMENTS = [
   }
 })();
 
-/* ── Level math — logarithmic, 92 levels, goal = 10,000h ── */
-const GOAL_MINS=600000;
-const LEVELS=92;
-
-function getThreshold(lvl){
-  if(lvl<=0)return 0;
-  if(lvl>=LEVELS)return GOAL_MINS;
-  return Math.round(GOAL_MINS*Math.log1p((lvl/LEVELS)*(Math.E-1)));
-}
-
+/* ── Level math ── */
+const GOAL_MINS=600000,LEVELS=92;
+function getThreshold(l){if(l<=0)return 0;if(l>=LEVELS)return GOAL_MINS;return Math.round(GOAL_MINS*Math.log1p((l/LEVELS)*(Math.E-1)));}
 function getLevelData(mins){
   if(mins<=0)return{level:0,progress:0};
-  let level=0;
-  for(let l=LEVELS;l>=0;l--){if(mins>=getThreshold(l)){level=l;break;}}
+  let level=0;for(let l=LEVELS;l>=0;l--){if(mins>=getThreshold(l)){level=l;break;}}
   level=Math.min(level,LEVELS);
   if(level>=LEVELS)return{level:LEVELS,progress:100};
   const cur=getThreshold(level),next=getThreshold(level+1);
@@ -356,7 +464,9 @@ function getLevelData(mins){
 }
 
 /* ── Data ── */
-let skills=[],timers={},timerInterval=null,modalParentId=null,editingId=null,pendingIconData=null;
+let skills=[],timers={},timerInterval=null;
+let modalParentId=null,editingId=null,pendingIconData=null;
+let moveSkillId=null,moveTargetId=null;
 
 function defaultSkills(){return[
   {id:'d1',name:'Programming',minutes:1200,icon:null,expanded:true,children:[
@@ -373,11 +483,20 @@ function save(){try{localStorage.setItem('skillexe_v3',JSON.stringify(skills));}
 function getTotalMins(s){return s.minutes+s.children.reduce((a,c)=>a+getTotalMins(c),0);}
 function countAll(list){return list.reduce((a,s)=>a+1+countAll(s.children),0);}
 function findSkill(id,list){for(const s of list){if(s.id===id)return s;const f=findSkill(id,s.children);if(f)return f;}return null;}
-function removeSkill(id,list){const i=list.findIndex(s=>s.id===id);if(i!==-1){list.splice(i,1);return true;}for(const s of list){if(removeSkill(id,s.children))return true;}return false;}
+function getParentList(id,list){if(list.find(s=>s.id===id))return list;for(const s of list){const r=getParentList(id,s.children);if(r)return r;}return null;}
+function removeSkill(id,list){const i=list.findIndex(s=>s.id===id);if(i!==-1){const[removed]=list.splice(i,1);return removed;}for(const s of list){const r=removeSkill(id,s.children);if(r)return r;}return null;}
 function fmtTime(m){if(m<60)return m+'m';const h=Math.floor(m/60),mn=m%60;return mn?h+'h '+mn+'m':h+'h';}
 function fmtSecs(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;if(h)return h+':'+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0');return m+':'+String(sc).padStart(2,'0');}
 
-/* ── Render ── */
+/* ── Tabs ── */
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['tree','rank'][i]===tab));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='rank')renderRankings();
+}
+
+/* ── Render tree ── */
 function render(){
   updateStats();
   const tree=document.getElementById('skill-tree');
@@ -394,45 +513,31 @@ function buildNode(skill){
   const bg=el?el.bg:'rgba(0,0,0,0)';
   const glow=el?el.glow:'rgba(0,255,65,0.2)';
   const hasTimer=!!timers[skill.id];
-  const isSpecial=el&&el.special;
 
   const node=document.createElement('div');
   node.className='skill-node'+(hasTimer?' active-timer':'');
   node.id='node-'+skill.id;
-  node.style.cssText=hasTimer?`border-color:rgba(255,170,0,0.4)`:``;
 
-  // Left accent bar color
-  const accentStyle=`background:${col};box-shadow:0 0 6px ${glow}`;
-
-  // Element block HTML
-  let elBlockHTML;
+  let elHTML;
   if(!el){
-    elBlockHTML=`<div class="element-block" style="border-right-color:rgba(255,255,255,0.07)">
-      <div class="el-number" style="color:#2d5c35">0</div>
-      <div class="el-symbol" style="color:#2d5c35;font-size:20px">—</div>
-      <div class="el-name" style="color:#2d5c35">Unranked</div>
-    </div>`;
+    elHTML=`<div class="element-block"><div class="el-number" style="color:#2d5c35">0</div><div class="el-symbol" style="color:#2d5c35;font-size:18px">—</div><div class="el-name" style="color:#2d5c35">Unranked</div></div>`;
   } else {
-    const symbolAnim=isSpecial?`animation:fm-pulse 2.5s infinite`:'';
-    const symbolStyle=`color:${col};text-shadow:0 0 12px ${glow},0 0 24px ${glow.replace('0.','0.15')};${symbolAnim}`;
-    elBlockHTML=`<div class="element-block" style="background:${bg};border-right-color:${col}22">
+    const anim=el.special?`animation:sp-pulse-${skill.id.replace(/\W/g,'')} 2.5s infinite`:'';
+    elHTML=`<div class="element-block" style="background:${bg};border-right-color:${col}22">
       <div class="el-number" style="color:${col};opacity:0.6">${level}</div>
-      <div class="el-symbol" style="${symbolStyle}">${el.sym}</div>
+      <div class="el-symbol" style="color:${col};text-shadow:0 0 10px ${glow},0 0 20px ${glow.replace(/[\d.]+\)$/,'0.12)')};${anim}">${el.sym}</div>
       <div class="el-name" style="color:${col};opacity:0.75">${el.name}</div>
     </div>`;
   }
 
-  const iconHTML=skill.icon
-    ?`<div class="skill-icon"><img src="${skill.icon}" alt=""/></div>`
-    :`<div class="skill-icon">${skill.name.slice(0,2).toUpperCase()}</div>`;
+  const iconHTML=skill.icon?`<div class="skill-icon"><img src="${skill.icon}" alt=""/></div>`:`<div class="skill-icon">${skill.name.slice(0,2).toUpperCase()}</div>`;
   const timerHTML=hasTimer?`<span class="timer-live" id="tlive-${skill.id}">${fmtSecs(timers[skill.id].elapsed)}</span>`:'';
 
   node.innerHTML=`
-    <style>.pulse-${skill.id.replace(/\W/g,'_')}{animation:fm-pulse 2.5s infinite}
-    @keyframes fm-pulse{0%,100%{text-shadow:0 0 12px ${glow},0 0 24px ${glow}}50%{text-shadow:0 0 22px ${glow},0 0 44px ${glow}}}</style>
+    ${el&&el.special?`<style>@keyframes sp-pulse-${skill.id.replace(/\W/g,'')}{ 0%,100%{text-shadow:0 0 10px ${glow},0 0 20px ${glow}} 50%{text-shadow:0 0 20px ${glow},0 0 40px ${glow}} }</style>`:''}
+    <div style="position:absolute;left:0;top:0;bottom:0;width:2px;background:${col};box-shadow:0 0 5px ${glow}"></div>
     <div class="skill-header" onclick="toggleExpand('${skill.id}')">
-      <div style="position:absolute;left:0;top:0;bottom:0;width:2px;${accentStyle}"></div>
-      ${elBlockHTML}
+      ${elHTML}
       <div class="skill-body">
         <div class="skill-top-row">
           ${iconHTML}
@@ -458,17 +563,17 @@ function buildNode(skill){
         <span class="input-label">M</span>
         <button class="btn" onclick="addTime('${skill.id}')">[ +TIME ]</button>
       </div>
-      <button class="btn${hasTimer?' timer-on':''}" id="tbtn-${skill.id}" onclick="toggleTimer('${skill.id}')">
+      <button class="btn${hasTimer?' timer-on':''}" onclick="toggleTimer('${skill.id}')">
         ${hasTimer?'[ ■ STOP ]':'[ ▶ TIMER ]'}
       </button>
       <button class="btn" onclick="openAddModal('${skill.id}')">[ + SUB ]</button>
       <button class="btn" onclick="openEditModal('${skill.id}')">[ EDIT ]</button>
+      <button class="btn warn" onclick="openMoveModal('${skill.id}')">[ MOVE ]</button>
       <button class="btn danger" onclick="deleteSkill('${skill.id}')">[ DEL ]</button>
     </div>`;
 
   if(skill.expanded&&skill.children.length){
-    const wrap=document.createElement('div');
-    wrap.className='children-container';
+    const wrap=document.createElement('div');wrap.className='children-container';
     skill.children.forEach(c=>wrap.appendChild(buildNode(c)));
     node.appendChild(wrap);
   }
@@ -477,6 +582,59 @@ function buildNode(skill){
 
 function toggleExpand(id){const s=findSkill(id,skills);if(!s)return;s.expanded=!s.expanded;save();}
 
+/* ── Rankings ── */
+function flattenSkills(list,path=''){
+  const out=[];
+  for(const s of list){
+    out.push({skill:s,path,totalMins:getTotalMins(s)});
+    out.push(...flattenSkills(s.children,path?(path+' › '+s.name):s.name));
+  }
+  return out;
+}
+
+function renderRankings(){
+  const all=flattenSkills(skills).sort((a,b)=>b.totalMins-a.totalMins);
+  const maxMins=all.length?all[0].totalMins:1;
+  const tbody=document.getElementById('rank-body');
+  tbody.innerHTML='';
+  if(!all.length){tbody.innerHTML='<tr><td colspan="4" style="padding:2rem;text-align:center;color:var(--text-muted)">No skills yet</td></tr>';return;}
+  all.forEach((entry,i)=>{
+    const{skill,path,totalMins}=entry;
+    const{level}=getLevelData(totalMins);
+    const el=level>0&&level<=92?ELEMENTS[level]:null;
+    const col=el?el.col:'#2d5c35';
+    const glow=el?el.glow:'transparent';
+    const pos=i+1;
+    const posClass=pos===1?'gold':pos===2?'silver':pos===3?'bronze':'';
+    const elCellHTML=el
+      ?`<div class="rank-el-inner" style="background:${el.bg};border-color:${col}33">
+          <div class="rank-el-sym" style="color:${col};text-shadow:0 0 8px ${glow}">${el.sym}</div>
+          <div class="rank-el-num" style="color:${col}">${level}</div>
+        </div>`
+      :`<div class="rank-el-inner"><div class="rank-el-sym" style="color:var(--text-muted)">—</div></div>`;
+
+    const tr=document.createElement('tr');
+    tr.className='rank-row';
+    tr.innerHTML=`
+      <td class="rank-pos ${posClass}">${pos}</td>
+      <td class="rank-el">${elCellHTML}</td>
+      <td class="rank-name">
+        <div class="rank-skill-name">${skill.name}</div>
+        ${path?`<div class="rank-path">${path}</div>`:''}
+      </td>
+      <td class="rank-time">
+        <div class="rank-time-val" style="color:${col};text-shadow:0 0 6px ${glow}">${fmtTime(totalMins)}</div>
+      </td>`;
+    // progress bar on hover via CSS — add as extra row
+    const barPct=Math.round((totalMins/maxMins)*100);
+    const barRow=document.createElement('tr');
+    barRow.innerHTML=`<td colspan="4" class="rank-bar-wrap"><div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${barPct}%;background:${col};box-shadow:0 0 4px ${glow}"></div></div></td>`;
+    tbody.appendChild(tr);
+    tbody.appendChild(barRow);
+  });
+}
+
+/* ── Stats ── */
 function updateStats(){
   const cnt=countAll(skills);
   const totalMins=skills.reduce((a,s)=>a+getTotalMins(s),0);
@@ -488,6 +646,7 @@ function updateStats(){
   document.getElementById('stat-remain').textContent=cnt?fmtTime(Math.max(0,GOAL_MINS-totalMins)):'∞';
 }
 
+/* ── Add time (inline) ── */
 function addTime(id){
   const h=parseFloat(document.getElementById('ih-'+id)?.value)||0;
   const m=parseFloat(document.getElementById('im-'+id)?.value)||0;
@@ -497,6 +656,7 @@ function addTime(id){
   document.getElementById('im-'+id).value='';
 }
 
+/* ── Timer ── */
 function toggleTimer(id){
   if(timers[id]){
     const elapsed=timers[id].elapsed;delete timers[id];
@@ -513,12 +673,15 @@ function toggleTimer(id){
 
 function deleteSkill(id){if(!confirm('TERMINATE skill node and all sub-nodes?'))return;delete timers[id];removeSkill(id,skills);save();}
 
+/* ── Edit/Add Modal ── */
 function openAddModal(parentId){
   modalParentId=parentId;editingId=null;pendingIconData=null;
   document.getElementById('modal-title').textContent=parentId?'INITIALIZE SUBSKILL':'INITIALIZE SKILL';
   document.getElementById('modal-name').value='';
   document.getElementById('modal-hours').value='';
   document.getElementById('modal-mins').value='';
+  document.getElementById('time-section').style.display='none';
+  document.getElementById('init-time-section').style.display='block';
   document.getElementById('icon-preview-box').innerHTML='<span>?</span>';
   document.getElementById('modal-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('modal-name').focus(),50);
@@ -529,30 +692,135 @@ function openEditModal(id){
   editingId=id;modalParentId=null;pendingIconData=s.icon||null;
   document.getElementById('modal-title').textContent='MODIFY SKILL';
   document.getElementById('modal-name').value=s.name;
-  document.getElementById('modal-hours').value=Math.floor(s.minutes/60)||'';
-  document.getElementById('modal-mins').value=s.minutes%60||'';
+  document.getElementById('time-section').style.display='block';
+  document.getElementById('init-time-section').style.display='none';
+  // Clear adjustment fields
+  ['set-h','set-m','add-h','add-m','sub-h','sub-m'].forEach(id=>document.getElementById(id).value='');
+  updateTimePreview(s.minutes);
   document.getElementById('icon-preview-box').innerHTML=s.icon?`<img src="${s.icon}"/>`:'<span>?</span>';
   document.getElementById('modal-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('modal-name').focus(),50);
 }
+
+function updateTimePreview(baseMins){
+  const setH=parseFloat(document.getElementById('set-h').value)||null;
+  const setM=parseFloat(document.getElementById('set-m').value)||null;
+  const addH=parseFloat(document.getElementById('add-h').value)||0;
+  const addM=parseFloat(document.getElementById('add-m').value)||0;
+  const subH=parseFloat(document.getElementById('sub-h').value)||0;
+  const subM=parseFloat(document.getElementById('sub-m').value)||0;
+  let result;
+  if(setH!==null||setM!==null){
+    result=Math.round((setH||0)*60+(setM||0));
+  } else {
+    result=baseMins+Math.round(addH*60+addM)-Math.round(subH*60+subM);
+  }
+  result=Math.max(0,result);
+  document.getElementById('time-preview').textContent=`RESULT: ${fmtTime(result)}`;
+}
+
+// Hook preview updates
+['set-h','set-m','add-h','add-m','sub-h','sub-m'].forEach(fid=>{
+  document.getElementById(fid).addEventListener('input',()=>{
+    if(editingId){const s=findSkill(editingId,skills);if(s)updateTimePreview(s.minutes);}
+  });
+});
 
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open');pendingIconData=null;}
 
 function saveModal(){
   const name=document.getElementById('modal-name').value.trim();
   if(!name){document.getElementById('modal-name').focus();return;}
-  const h=parseFloat(document.getElementById('modal-hours').value)||0;
-  const m=parseFloat(document.getElementById('modal-mins').value)||0;
-  const mins=Math.round(h*60+m);
-  if(editingId){const s=findSkill(editingId,skills);if(s){s.name=name;s.minutes=mins;s.icon=pendingIconData||null;}}
-  else{
-    const ns={id:Date.now()+'',name,minutes:mins,icon:pendingIconData||null,expanded:false,children:[]};
+
+  if(editingId){
+    const s=findSkill(editingId,skills);
+    if(!s)return;
+    s.name=name;
+    s.icon=pendingIconData||null;
+    // Calculate new minutes
+    const setH=parseFloat(document.getElementById('set-h').value)||null;
+    const setM=parseFloat(document.getElementById('set-m').value)||null;
+    const addH=parseFloat(document.getElementById('add-h').value)||0;
+    const addM=parseFloat(document.getElementById('add-m').value)||0;
+    const subH=parseFloat(document.getElementById('sub-h').value)||0;
+    const subM=parseFloat(document.getElementById('sub-m').value)||0;
+    if(setH!==null||setM!==null){
+      s.minutes=Math.max(0,Math.round((setH||0)*60+(setM||0)));
+    } else {
+      s.minutes=Math.max(0,s.minutes+Math.round(addH*60+addM)-Math.round(subH*60+subM));
+    }
+  } else {
+    const h=parseFloat(document.getElementById('modal-hours').value)||0;
+    const m=parseFloat(document.getElementById('modal-mins').value)||0;
+    const ns={id:Date.now()+'',name,minutes:Math.round(h*60+m),icon:pendingIconData||null,expanded:false,children:[]};
     if(modalParentId){const p=findSkill(modalParentId,skills);if(p){p.children.push(ns);p.expanded=true;}}
     else skills.push(ns);
   }
   closeModal();save();
 }
 
+/* ── Move Modal ── */
+function openMoveModal(id){
+  moveSkillId=id;moveTargetId=null;
+  const s=findSkill(id,skills);
+  document.getElementById('move-skill-name').textContent=s?s.name:'—';
+  // Build destination list
+  const list=document.getElementById('move-list');
+  list.innerHTML='';
+  // Root option
+  const rootItem=document.createElement('div');
+  rootItem.className='move-tree-item';
+  rootItem.innerHTML=`<span class="move-item-root">[ ROOT LEVEL ]</span>`;
+  rootItem.onclick=()=>selectMoveTarget(null,rootItem);
+  list.appendChild(rootItem);
+  // All other skills (excluding self and own descendants)
+  const excluded=getDescendantIds(s);
+  excluded.add(id);
+  function addItems(list2,depth){
+    for(const sk of list2){
+      if(excluded.has(sk.id))continue;
+      const item=document.createElement('div');
+      item.className='move-tree-item';
+      const indents='<span class="move-indent"></span>'.repeat(depth);
+      item.innerHTML=`${indents}<span class="move-item-name">${sk.name}</span>`;
+      item.onclick=()=>selectMoveTarget(sk.id,item);
+      list.appendChild(item);
+      if(sk.children.length)addItems(sk.children,depth+1);
+    }
+  }
+  addItems(skills,0);
+  document.getElementById('move-overlay').classList.add('open');
+}
+
+function getDescendantIds(skill){
+  const ids=new Set();
+  function walk(s){s.children.forEach(c=>{ids.add(c.id);walk(c);});}
+  walk(skill);return ids;
+}
+
+function selectMoveTarget(targetId,el){
+  moveTargetId=targetId;
+  document.querySelectorAll('.move-tree-item').forEach(i=>i.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function confirmMove(){
+  if(moveSkillId===undefined||moveTargetId===undefined&&moveTargetId!==null){closeMoveModal();return;}
+  const skill=removeSkill(moveSkillId,skills);
+  if(!skill){closeMoveModal();return;}
+  if(moveTargetId===null){
+    skills.push(skill);
+  } else {
+    const target=findSkill(moveTargetId,skills);
+    if(target){target.children.push(skill);target.expanded=true;}
+    else skills.push(skill);
+  }
+  closeMoveModal();save();
+}
+
+function closeMoveModal(){document.getElementById('move-overlay').classList.remove('open');moveSkillId=null;moveTargetId=undefined;}
+
+/* ── Icon upload ── */
 function handleIconUpload(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
@@ -560,24 +828,32 @@ function handleIconUpload(e){
   reader.readAsDataURL(file);e.target.value='';
 }
 
+/* ── Export/Import ── */
 function exportData(){
   const blob=new Blob([JSON.stringify({version:3,skills},null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download='skillexe-backup-'+Date.now()+'.json';a.click();URL.revokeObjectURL(url);
 }
-
 function importData(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=ev=>{
-    try{const data=JSON.parse(ev.target.result);const imported=data.skills||data;if(!Array.isArray(imported))throw new Error();if(!confirm('OVERWRITE current data with '+countAll(imported)+' imported skills?'))return;skills=imported;save();}
-    catch(err){alert('IMPORT ERROR: invalid file format');}
+    try{const data=JSON.parse(ev.target.result);const imp=data.skills||data;if(!Array.isArray(imp))throw 0;if(!confirm('OVERWRITE with '+countAll(imp)+' imported skills?'))return;skills=imp;save();}
+    catch(err){alert('IMPORT ERROR: invalid format');}
   };
   reader.readAsText(file);e.target.value='';
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();if(e.key==='Enter'&&document.getElementById('modal-overlay').classList.contains('open'))saveModal();});
+/* ── Keyboard ── */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();closeMoveModal();}
+  if(e.key==='Enter'){
+    if(document.getElementById('modal-overlay').classList.contains('open'))saveModal();
+    if(document.getElementById('move-overlay').classList.contains('open'))confirmMove();
+  }
+});
 document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('modal-overlay'))closeModal();});
+document.getElementById('move-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('move-overlay'))closeMoveModal();});
 
 load();render();
 </script>
